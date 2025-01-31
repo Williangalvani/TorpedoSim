@@ -1,31 +1,177 @@
-[gd_scene load_steps=55 format=4 uid="uid://dexb5q1ladh3c"]
+[gd_scene load_steps=77 format=4 uid="uid://dexb5q1ladh3c"]
 
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_d8ovu"]
-[ext_resource type="Script" path="res://assets/controller.gd" id="2_3biym"]
+[ext_resource type="Script" path="res://controller.gd" id="2_k7nql"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/water_shader_examples.gd" id="2_vg6i1"]
 [ext_resource type="Material" uid="uid://bmgpuvvwh8rel" path="res://assets/bubble.tres" id="3_frdic"]
 [ext_resource type="PackedScene" uid="uid://ignpdv10rx52" path="res://addons/boujie_water_shader/prefabs/deep_ocean.tscn" id="3_hlscj"]
 [ext_resource type="Shader" path="res://example/boujie_water_shader/DropWithDistance.gdshader" id="4_3gpu7"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="4_arhx4"]
+[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="4_atjr0"]
+[ext_resource type="Curve" uid="uid://bf3v5qwdrjkmt" path="res://addons/godot_aerodynamic_physics/core/resources/default_drag_aoa_curve.tres" id="5_1xccy"]
 [ext_resource type="Texture2D" uid="uid://dwsniss71hd03" path="res://example/boujie_water_shader/Sand.png" id="5_5b6db"]
+[ext_resource type="Curve" uid="uid://cx3q3y0bx1rv7" path="res://addons/godot_aerodynamic_physics/core/resources/default_lift_aoa_curve.tres" id="6_i7rkb"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/ocean_floor.gd" id="6_lrwah"]
+[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_config.gd" id="7_3ct5d"]
+[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/aero_surface_config.gd" id="8_bs3xk"]
+[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_axis_config.gd" id="9_ahgbx"]
+[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_config.gd" id="10_at5uk"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="14_u7ir7"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="15_kdxh2"]
 [ext_resource type="Environment" uid="uid://kw5c7bat248e" path="res://example/boujie_water_shader/MapEnvironment.tres" id="23_k3bok"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/underwater_fog.gd" id="24_rbbqb"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/hud.gd" id="25_hqyxd"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/fps_counter.gd" id="26_fof8h"]
+[ext_resource type="Script" path="res://ardupilot_sitl_json.gd" id="27_0glnr"]
 [ext_resource type="Script" path="res://example/boujie_water_shader/visibility_range_lod_group.gd" id="27_1p532"]
 [ext_resource type="ArrayMesh" uid="uid://f85dvooifh0c" path="res://example/boujie_water_shader/mountains.obj" id="28_pqqnm"]
 [ext_resource type="Material" uid="uid://c7phyredymkgu" path="res://example/boujie_water_shader/mountain_material.tres" id="29_gd1f6"]
 [ext_resource type="Texture2D" uid="uid://3kpp1l04oqfu" path="res://example/boujie_water_shader/obelisk/StoneFloorTexture.png" id="30_mcp4g"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_y1rob"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7vqf7"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
 dof_blur_near_distance = 0.05
 dof_blur_amount = 0.21
+
+[sub_resource type="Curve" id="Curve_v5kpe"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(0.75, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_ob7c7"]
+min_value = 1.0
+max_value = 1.69
+bake_resolution = 23
+_data = [Vector2(0.07, 1), 0.0, 0.0, 0, 0, Vector2(0.088, 1.519), 0.0, 0.0, 0, 0, Vector2(0.119, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_cmcrd"]
+min_value = -1.0
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, -0.571), 0.0, 0.0, 0, 0, Vector2(0.375, -0.4), 0.0, 0.0, 0, 0, Vector2(0.403, -1), 0.0, 0.0, 0, 0, Vector2(0.597, 1), 0.0, 0.0, 0, 0, Vector2(0.625, 0.4), 0.0, 0.0, 0, 0, Vector2(0.75, 0.571), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 8
+
+[sub_resource type="Curve" id="Curve_l1ihd"]
+bake_resolution = 4
+_data = [Vector2(0, 1), 0.0, -2.09824, 0, 0, Vector2(0.406542, 0.490909), -0.666575, -0.666575, 0, 0, Vector2(1, 0.290909), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Resource" id="Resource_sh3pa"]
+script = ExtResource("7_3ct5d")
+min_lift_coefficient = -1.5
+max_lift_coefficient = 1.5
+lift_aoa_curve = SubResource("Curve_cmcrd")
+min_drag_coefficient = 0.01
+max_drag_coefficient = 0.5
+drag_aoa_curve = SubResource("Curve_v5kpe")
+sweep_drag_multiplier_curve = SubResource("Curve_l1ihd")
+drag_at_mach_multiplier_curve = SubResource("Curve_ob7c7")
+
+[sub_resource type="Resource" id="Resource_sgvcw"]
+script = ExtResource("8_bs3xk")
+chord = 0.36
+span = 0.57
+auto_aspect_ratio = true
+aspect_ratio = 1.58333
+
+[sub_resource type="Resource" id="Resource_kcr2m"]
+script = ExtResource("9_ahgbx")
+contribution = Vector3(-1, 0, 0)
+easing = 1.0
+
+[sub_resource type="Resource" id="Resource_dsidn"]
+script = ExtResource("10_at5uk")
+enable_control = true
+max_value = Vector3(0.1, 0, 0)
+limit_movement_speed = false
+movement_speed = 1.0
+yaw_config = SubResource("Resource_kcr2m")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk4h6"]
+resource_name = "Br Blue"
+cull_mode = 2
+albedo_color = Color(0.145216, 0.325063, 0.906331, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_18drh"]
+_surfaces = [{
+"aabb": AABB(-0.1, -0.0866354, -2.46813, 0.2, 0.525105, 1.51856),
+"format": 34359742465,
+"index_count": 168,
+"index_data": PackedByteArray("AAAGAAMAAAABAAYAAQACAAkAAQAAAAIAAgADAAUAAgAAAAMABQAEAAsABQADAAQAAwAHAAQAAwAGAAcAAQAIAAYAAQAJAAgABgAKAAcABgAIAAoACQAFAAgACQACAAUACAALAAoACAAFAAsADQAHAAoABwAcABsABwANABwACwAOAAoADgAMAAoADgAPAAwADQAKAAwADgARAA8AEAARAA4AEAATABEABAAOAAsABAAQAA4AEQAXAA8AEQASABcAEgATABQAEgARABMAFgATABUAFgAUABMAEwAQABUABwAWABUAFQAQAAcAFgAZABcAFgAYABkAFwAUABYAFwASABQABwAYABYABwAbABgAHQAYABoAHQAZABgAGwAaABgAHAAaABsAHAAdABoAGQAdABwAGQAMABcADAAcAA0ADAAZABwADwAXAAwAEAAEAAcA"),
+"lods": [0.038044, PackedByteArray("AAAGAAQAAAABAAYABAAGAAcAEwAEAAcABwAYABMAGAAUABMABwAaABgAAQACAAkAAQAAAAIAAQAJAAgAAQAIAAYAAgAAAAQAAgAEAAsABAARAAsABAATABEAEgARABMAEgATABQABgAcAAcABgAIABwAHAAaAAcAHAAdABoACQALAAgACQACAAsACAALABwACwAXABwAFwAdABwAEQAXAAsAEQASABcAFwAUABgAFwASABQAHQAXABgAHQAYABoA")],
+"name": "Br Blue",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 30,
+"vertex_data": PackedByteArray("0MzMvUV+qD6isHO/0MzMvXgkJT4qF3O/0MzMPUV+qD6isHO/0MzMvc3o0T5ZJYC/0MzMvRB/4D4/QY2/0MzMPc3o0T5ZJYC/0MzMvXPITz3PxHq/0MzMvVdCWjwXWq+/0MzMPXPITz3PxHq/0MzMPXgkJT4qF3O/0MzMPVdCWjwXWq+/0MzMPRB/4D4/QY2/0MzMPTBFXDxFka+/0MzMPVh9WDwofK+/0MzMPY8eyj6Z7sa/0MzMPQD+fz749f6/0MzMvY8eyj6Z7sa/0MzMPZeSlT6JjQbA0MzMPVV+SD7h9R3A0MzMvZeSlT6JjQbA0MzMvVV+SD7h9R3A0MzMvUoCgD588/6/0MzMvfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMvVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMveRtsb2SQhXA0MzMvY6WSr1Ktvy/0MzMPYSVSr36tfy/0MzMPeRtsb2SQhXA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_0g68g"]
+resource_name = "fishy_Cylinder_015"
+_surfaces = [{
+"aabb": AABB(-0.1, -0.0866354, -2.46813, 0.2, 0.525105, 1.51856),
+"attribute_data": PackedByteArray("AAAAPgAAgD4AAMA+AAAAAAAAwD4AAIA/AAAAPgAAAD8AAMA+AABAPwAAwD4AAEA/AADAPgAAgD4AAMA+AACAPgAAwD4AAIA+AAAAPwAAAAAAAAA/AAAAAAAAAD8AAIA/AAAgPwAAAAAAACA/AACAPwAAAD/8/38+AAAAP/z/fz4AAAA//P9/Pv///z4AAEA/////PgAAQD////8+AABAPwAAID8AAEA/AAAgPwAAQD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAMA+AAAAPwAAwD4AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAIA+AAAgPwAAgD4AACA/AAAAPwAAID8AAAA/AAAgPwAAAD8AACA/AACAPgAAID8AAIA+AAAgP5BzvT4AACA/AAAAAAAAID8AAIA/AAAgPwAAgD4AACA/AACAPgAAID8AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAAAAAABgPwAAgD4AACA/AACAPwAAYD8AAAA/AAAgPwAAQD8AACA/AABAPwAAID+VR2E/AAAgPwAAQD8AACA/AABAPwAAID8AAAA/AAAgPwAAAD8AACA/AABAPwAAID8AAEA/AAAgPwAAAD8AACA/AAAAPwAAID8AAEA/AAAgPwAAQD8AACA/AABAPwAAID8AAEA/AAAgPwAAQD8AACA/AAAAPwAAID8AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAAA/AADAPgAAgD4="),
+"format": 34359742487,
+"index_count": 168,
+"index_data": PackedByteArray("AgATAAsAAgAFABMAAwAGABkAAwAAAAYABwAJAA4ABwABAAkADwAMAB0ADwAKAAwACwAVAA0ACwATABUABAAWABEABAAZABYAEgAbABQAEgAXABsAGgAQABgAGgAIABAAGAAeABwAGAAQAB4AIAAUABsAFABAAD4AFAAgAEAAHgAjABwAIwAfABwAIwAkAB8AIQAcAB8AIwAoACQAJQAnACIAJQAsACcADAAiAB0ADAAlACIAKAA2ACQAKAArADYAKQAtAC8AKQAnAC0ANAAuADIANAAxAC4ALgAmADIAFQA0ADIAMgAmABUAMwA5ADUAMwA3ADkANQAwADMANQAqADAAFQA4ADQAFQA/ADgAQgA3ADsAQgA5ADcAPwA9ADgAQAA8AD4AQABDADwAOgBEAEEAOgAfADYAHwBBACEAHwA6AEEAJAA2AB8AJgANABUA"),
+"lods": [0.038044, PackedByteArray("AgATAA0AAgAFABMADQATABUALgANABUAFQA4AC4AOAAxAC4AFQA9ADgAAwAGABkAAwAAAAYABAAZABYABAAWABEABgABAAwARQAMAB0ADAAnAB0ADAAsACcAKQAnAC0AKQAtAC8AEgBAABQAEgAXAEAAQAA8ABQAQABDADwAGgAeABgAGgAIAB4AGAAeAEEAHgA2AEEANgBEAEEAKAA2AB4AKAArADYANQAwADcANQAqADAAQgA1ADcAQgA3ADsA")],
+"material": SubResource("StandardMaterial3D_sk4h6"),
+"name": "Br Blue",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 70,
+"vertex_data": PackedByteArray("0MzMvUV+qD6isHO/0MzMvUV+qD6isHO/0MzMvUV+qD6isHO/0MzMvXgkJT4qF3O/0MzMvXgkJT4qF3O/0MzMvXgkJT4qF3O/0MzMPUV+qD6isHO/0MzMPUV+qD6isHO/0MzMPUV+qD6isHO/0MzMvc3o0T5ZJYC/0MzMvc3o0T5ZJYC/0MzMvc3o0T5ZJYC/0MzMvRB/4D4/QY2/0MzMvRB/4D4/QY2/0MzMPc3o0T5ZJYC/0MzMPc3o0T5ZJYC/0MzMPc3o0T5ZJYC/0MzMvXPITz3PxHq/0MzMvXPITz3PxHq/0MzMvXPITz3PxHq/0MzMvVdCWjwXWq+/0MzMvVdCWjwXWq+/0MzMPXPITz3PxHq/0MzMPXPITz3PxHq/0MzMPXPITz3PxHq/0MzMPXgkJT4qF3O/0MzMPXgkJT4qF3O/0MzMPVdCWjwXWq+/0MzMPVdCWjwXWq+/0MzMPRB/4D4/QY2/0MzMPRB/4D4/QY2/0MzMPTBFXDxFka+/0MzMPVh9WDwofK+/0MzMPVh9WDwofK+/0MzMPY8eyj6Z7sa/0MzMPY8eyj6Z7sa/0MzMPQD+fz749f6/0MzMvY8eyj6Z7sa/0MzMvY8eyj6Z7sa/0MzMPZeSlT6JjQbA0MzMPZeSlT6JjQbA0MzMPVV+SD7h9R3A0MzMPVV+SD7h9R3A0MzMPVV+SD7h9R3A0MzMvZeSlT6JjQbA0MzMvZeSlT6JjQbA0MzMvZeSlT6JjQbA0MzMvVV+SD7h9R3A0MzMvVV+SD7h9R3A0MzMvVV+SD7h9R3A0MzMvUoCgD588/6/0MzMvfXlvj2J0R3A0MzMvfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMvVKHAzzwLRvA0MzMvVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMveRtsb2SQhXA0MzMveRtsb2SQhXA0MzMveRtsb2SQhXA0MzMvY6WSr1Ktvy/0MzMvY6WSr1Ktvy/0MzMPYSVSr36tfy/0MzMPYSVSr36tfy/0MzMPeRtsb2SQhXA0MzMPeRtsb2SQhXA0MzMPeRtsb2SQhXA0MzMPUV+qD6isHO//3/Dgf///7//f2ywbLD//wAA/3+zsv///3+ncf///7//f6dxV44AgAAA/39QmwCA/3/Dgf///7//f2ywbLD+/////39ssP///39ssGyw////fyPkI+T//wAA/3+G4v///3+x9U0K//8AAP9/I+T///9/bLBssP7//38j5Nsb/v////9/tOD///9/rWRRmwCA/38xC830AIAAAP9/DfQAgP9/nwtf9ACAAAD/f239AID/f61kUZsAgP9/MQvN9ACA////f4noAID/f6dxV44AgP///3/MnwCA/3+fC1/0AID///9/zfQAgP9/sfVNCv7/////f1T0//////9/////v/9/Cwz///8/////f////7/kj///////v////3////+/////f////7/kj///////vwAA/3////+/gZf//wAA/7////9/////v66a//8AAP+/Sv0AAP///7////9/////v4GX//////+/gZf//wAA/78AAP9/////v66a//8AAP+/Sv0AAP///78AAP9/////vwAA/3////+/KucAAP///78AAP9/////vyrnAAD///+/////f////78uywAA////vwAA/3////+/LssAAP///7////9/////v73AAAD///+//38LDP///z8AAP9/////v/9/Cwz///8/AAD/f////7//fwsM////P////3////+/vcAAAP///7//fwsM////P////3////+//39EzP///78=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_18drh")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovxuv"]
+albedo_color = Color(1, 1, 0.278431, 1)
+
+[sub_resource type="Curve" id="Curve_et0wi"]
+min_value = 1.0
+max_value = 1.69
+bake_resolution = 23
+_data = [Vector2(0.07, 1), 0.0, 0.0, 0, 0, Vector2(0.088, 1.519), 0.0, 0.0, 0, 0, Vector2(0.119, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_gxs22"]
+bake_resolution = 4
+_data = [Vector2(0, 1), 0.0, -2.09824, 0, 0, Vector2(0.406542, 0.490909), -0.666575, -0.666575, 0, 0, Vector2(1, 0.290909), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Resource" id="Resource_pm1yp"]
+script = ExtResource("7_3ct5d")
+min_lift_coefficient = -1.0
+max_lift_coefficient = 1.0
+lift_aoa_curve = ExtResource("6_i7rkb")
+min_drag_coefficient = 0.0
+max_drag_coefficient = 1.0
+drag_aoa_curve = ExtResource("5_1xccy")
+sweep_drag_multiplier_curve = SubResource("Curve_gxs22")
+drag_at_mach_multiplier_curve = SubResource("Curve_et0wi")
+
+[sub_resource type="Resource" id="Resource_xmxfo"]
+script = ExtResource("8_bs3xk")
+chord = 0.36
+span = 0.57
+auto_aspect_ratio = true
+aspect_ratio = 1.58333
+
+[sub_resource type="Resource" id="Resource_4upop"]
+script = ExtResource("9_ahgbx")
+contribution = Vector3(-1, 0, 0)
+easing = 2.63902
+
+[sub_resource type="Resource" id="Resource_s8wdk"]
+script = ExtResource("10_at5uk")
+enable_control = true
+max_value = Vector3(0.2, 0, 0)
+limit_movement_speed = false
+movement_speed = 1.0
+pitch_config = SubResource("Resource_4upop")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7rmw1"]
 resource_name = "black metal.001"
@@ -218,12 +364,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_2be7v")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk4h6"]
-resource_name = "Br Blue"
-cull_mode = 2
-albedo_color = Color(0.145216, 0.325063, 0.906331, 1)
-roughness = 0.5
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_mm37p"]
 _surfaces = [{
 "aabb": AABB(-1.17797, -1.42666, -1.3161, 2.47318, 0.347844, 2.27064),
@@ -331,43 +471,6 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_fr4ud")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_18drh"]
-_surfaces = [{
-"aabb": AABB(-0.1, -0.0866354, -2.46813, 0.2, 0.525105, 1.51856),
-"format": 34359742465,
-"index_count": 168,
-"index_data": PackedByteArray("AAAGAAMAAAABAAYAAQACAAkAAQAAAAIAAgADAAUAAgAAAAMABQAEAAsABQADAAQAAwAHAAQAAwAGAAcAAQAIAAYAAQAJAAgABgAKAAcABgAIAAoACQAFAAgACQACAAUACAALAAoACAAFAAsADQAHAAoABwAcABsABwANABwACwAOAAoADgAMAAoADgAPAAwADQAKAAwADgARAA8AEAARAA4AEAATABEABAAOAAsABAAQAA4AEQAXAA8AEQASABcAEgATABQAEgARABMAFgATABUAFgAUABMAEwAQABUABwAWABUAFQAQAAcAFgAZABcAFgAYABkAFwAUABYAFwASABQABwAYABYABwAbABgAHQAYABoAHQAZABgAGwAaABgAHAAaABsAHAAdABoAGQAdABwAGQAMABcADAAcAA0ADAAZABwADwAXAAwAEAAEAAcA"),
-"lods": [0.038044, PackedByteArray("AAAGAAQAAAABAAYABAAGAAcAEwAEAAcABwAYABMAGAAUABMABwAaABgAAQACAAkAAQAAAAIAAQAJAAgAAQAIAAYAAgAAAAQAAgAEAAsABAARAAsABAATABEAEgARABMAEgATABQABgAcAAcABgAIABwAHAAaAAcAHAAdABoACQALAAgACQACAAsACAALABwACwAXABwAFwAdABwAEQAXAAsAEQASABcAFwAUABgAFwASABQAHQAXABgAHQAYABoA")],
-"name": "Br Blue",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 30,
-"vertex_data": PackedByteArray("0MzMvUV+qD6isHO/0MzMvXgkJT4qF3O/0MzMPUV+qD6isHO/0MzMvc3o0T5ZJYC/0MzMvRB/4D4/QY2/0MzMPc3o0T5ZJYC/0MzMvXPITz3PxHq/0MzMvVdCWjwXWq+/0MzMPXPITz3PxHq/0MzMPXgkJT4qF3O/0MzMPVdCWjwXWq+/0MzMPRB/4D4/QY2/0MzMPTBFXDxFka+/0MzMPVh9WDwofK+/0MzMPY8eyj6Z7sa/0MzMPQD+fz749f6/0MzMvY8eyj6Z7sa/0MzMPZeSlT6JjQbA0MzMPVV+SD7h9R3A0MzMvZeSlT6JjQbA0MzMvVV+SD7h9R3A0MzMvUoCgD588/6/0MzMvfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMvVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMveRtsb2SQhXA0MzMvY6WSr1Ktvy/0MzMPYSVSr36tfy/0MzMPeRtsb2SQhXA")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_0g68g"]
-resource_name = "fishy_Cylinder_015"
-_surfaces = [{
-"aabb": AABB(-0.1, -0.0866354, -2.46813, 0.2, 0.525105, 1.51856),
-"attribute_data": PackedByteArray("AAAAPgAAgD4AAMA+AAAAAAAAwD4AAIA/AAAAPgAAAD8AAMA+AABAPwAAwD4AAEA/AADAPgAAgD4AAMA+AACAPgAAwD4AAIA+AAAAPwAAAAAAAAA/AAAAAAAAAD8AAIA/AAAgPwAAAAAAACA/AACAPwAAAD/8/38+AAAAP/z/fz4AAAA//P9/Pv///z4AAEA/////PgAAQD////8+AABAPwAAID8AAEA/AAAgPwAAQD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAMA+AAAAPwAAwD4AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAIA+AAAgPwAAgD4AACA/AAAAPwAAID8AAAA/AAAgPwAAAD8AACA/AACAPgAAID8AAIA+AAAgP5BzvT4AACA/AAAAAAAAID8AAIA/AAAgPwAAgD4AACA/AACAPgAAID8AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAAAAAABgPwAAgD4AACA/AACAPwAAYD8AAAA/AAAgPwAAQD8AACA/AABAPwAAID+VR2E/AAAgPwAAQD8AACA/AABAPwAAID8AAAA/AAAgPwAAAD8AACA/AABAPwAAID8AAEA/AAAgPwAAAD8AACA/AAAAPwAAID8AAEA/AAAgPwAAQD8AACA/AABAPwAAID8AAEA/AAAgPwAAQD8AACA/AAAAPwAAID8AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAAA/AADAPgAAgD4="),
-"format": 34359742487,
-"index_count": 168,
-"index_data": PackedByteArray("AgATAAsAAgAFABMAAwAGABkAAwAAAAYABwAJAA4ABwABAAkADwAMAB0ADwAKAAwACwAVAA0ACwATABUABAAWABEABAAZABYAEgAbABQAEgAXABsAGgAQABgAGgAIABAAGAAeABwAGAAQAB4AIAAUABsAFABAAD4AFAAgAEAAHgAjABwAIwAfABwAIwAkAB8AIQAcAB8AIwAoACQAJQAnACIAJQAsACcADAAiAB0ADAAlACIAKAA2ACQAKAArADYAKQAtAC8AKQAnAC0ANAAuADIANAAxAC4ALgAmADIAFQA0ADIAMgAmABUAMwA5ADUAMwA3ADkANQAwADMANQAqADAAFQA4ADQAFQA/ADgAQgA3ADsAQgA5ADcAPwA9ADgAQAA8AD4AQABDADwAOgBEAEEAOgAfADYAHwBBACEAHwA6AEEAJAA2AB8AJgANABUA"),
-"lods": [0.038044, PackedByteArray("AgATAA0AAgAFABMADQATABUALgANABUAFQA4AC4AOAAxAC4AFQA9ADgAAwAGABkAAwAAAAYABAAZABYABAAWABEABgABAAwARQAMAB0ADAAnAB0ADAAsACcAKQAnAC0AKQAtAC8AEgBAABQAEgAXAEAAQAA8ABQAQABDADwAGgAeABgAGgAIAB4AGAAeAEEAHgA2AEEANgBEAEEAKAA2AB4AKAArADYANQAwADcANQAqADAAQgA1ADcAQgA3ADsA")],
-"material": SubResource("StandardMaterial3D_sk4h6"),
-"name": "Br Blue",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 70,
-"vertex_data": PackedByteArray("0MzMvUV+qD6isHO/0MzMvUV+qD6isHO/0MzMvUV+qD6isHO/0MzMvXgkJT4qF3O/0MzMvXgkJT4qF3O/0MzMvXgkJT4qF3O/0MzMPUV+qD6isHO/0MzMPUV+qD6isHO/0MzMPUV+qD6isHO/0MzMvc3o0T5ZJYC/0MzMvc3o0T5ZJYC/0MzMvc3o0T5ZJYC/0MzMvRB/4D4/QY2/0MzMvRB/4D4/QY2/0MzMPc3o0T5ZJYC/0MzMPc3o0T5ZJYC/0MzMPc3o0T5ZJYC/0MzMvXPITz3PxHq/0MzMvXPITz3PxHq/0MzMvXPITz3PxHq/0MzMvVdCWjwXWq+/0MzMvVdCWjwXWq+/0MzMPXPITz3PxHq/0MzMPXPITz3PxHq/0MzMPXPITz3PxHq/0MzMPXgkJT4qF3O/0MzMPXgkJT4qF3O/0MzMPVdCWjwXWq+/0MzMPVdCWjwXWq+/0MzMPRB/4D4/QY2/0MzMPRB/4D4/QY2/0MzMPTBFXDxFka+/0MzMPVh9WDwofK+/0MzMPVh9WDwofK+/0MzMPY8eyj6Z7sa/0MzMPY8eyj6Z7sa/0MzMPQD+fz749f6/0MzMvY8eyj6Z7sa/0MzMvY8eyj6Z7sa/0MzMPZeSlT6JjQbA0MzMPZeSlT6JjQbA0MzMPVV+SD7h9R3A0MzMPVV+SD7h9R3A0MzMPVV+SD7h9R3A0MzMvZeSlT6JjQbA0MzMvZeSlT6JjQbA0MzMvZeSlT6JjQbA0MzMvVV+SD7h9R3A0MzMvVV+SD7h9R3A0MzMvVV+SD7h9R3A0MzMvUoCgD588/6/0MzMvfXlvj2J0R3A0MzMvfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMPfXlvj2J0R3A0MzMvVKHAzzwLRvA0MzMvVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMPVKHAzzwLRvA0MzMveRtsb2SQhXA0MzMveRtsb2SQhXA0MzMveRtsb2SQhXA0MzMvY6WSr1Ktvy/0MzMvY6WSr1Ktvy/0MzMPYSVSr36tfy/0MzMPYSVSr36tfy/0MzMPeRtsb2SQhXA0MzMPeRtsb2SQhXA0MzMPeRtsb2SQhXA0MzMPUV+qD6isHO//3/Dgf///7//f2ywbLD//wAA/3+zsv///3+ncf///7//f6dxV44AgAAA/39QmwCA/3/Dgf///7//f2ywbLD+/////39ssP///39ssGyw////fyPkI+T//wAA/3+G4v///3+x9U0K//8AAP9/I+T///9/bLBssP7//38j5Nsb/v////9/tOD///9/rWRRmwCA/38xC830AIAAAP9/DfQAgP9/nwtf9ACAAAD/f239AID/f61kUZsAgP9/MQvN9ACA////f4noAID/f6dxV44AgP///3/MnwCA/3+fC1/0AID///9/zfQAgP9/sfVNCv7/////f1T0//////9/////v/9/Cwz///8/////f////7/kj///////v////3////+/////f////7/kj///////vwAA/3////+/gZf//wAA/7////9/////v66a//8AAP+/Sv0AAP///7////9/////v4GX//////+/gZf//wAA/78AAP9/////v66a//8AAP+/Sv0AAP///78AAP9/////vwAA/3////+/KucAAP///78AAP9/////vyrnAAD///+/////f////78uywAA////vwAA/3////+/LssAAP///7////9/////v73AAAD///+//38LDP///z8AAP9/////v/9/Cwz///8/AAD/f////7//fwsM////P////3////+/vcAAAP///7//fwsM////P////3////+//39EzP///78=")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_18drh")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovxuv"]
-albedo_color = Color(1, 1, 0.278431, 1)
 
 [sub_resource type="Animation" id="Animation_15fd0"]
 resource_name = "spinprops-loop"
@@ -479,65 +582,104 @@ dof_blur_amount = 0.21
 [node name="Node3D" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, -1.91176, 3.03108)
-attributes = SubResource("CameraAttributesPractical_y1rob")
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1.75, 3.03108)
+attributes = SubResource("CameraAttributesPractical_7vqf7")
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("1_d8ovu")
 
-[node name="auv" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.66176, 0)
-linear_damp = 1.36
+[node name="AeroBody3D" type="VehicleBody3D" parent="."]
+mass = 5.0
+center_of_mass_mode = 1
+linear_damp_mode = 1
 angular_damp_mode = 1
-angular_damp = 10.0
-script = ExtResource("2_3biym")
+script = ExtResource("2_k7nql")
+show_debug = true
 
-[node name="bodymesh" type="Node3D" parent="auv"]
-transform = Transform3D(2.99799, 0, 0, 0, 2.99799, 0, 0, 0, 2.99799, 0, 0, 0)
+[node name="Rudder" type="Node3D" parent="AeroBody3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.76837e-07, -0.0291609, -0.578478)
+script = ExtResource("4_atjr0")
+manual_config = SubResource("Resource_sh3pa")
+wing_config = SubResource("Resource_sgvcw")
+actuation_config = SubResource("Resource_dsidn")
 
-[node name="Empty" type="Node3D" parent="auv/bodymesh"]
+[node name="Cylinder_003" type="MeshInstance3D" parent="AeroBody3D/Rudder"]
+transform = Transform3D(-7.46394e-09, -6.40055e-08, -0.110644, 0.0866629, -0.00968414, -9.98249e-09, 0.00151272, 0.5548, -1.43131e-08, 0.0295579, 0.0244062, 0.000222713)
+mesh = SubResource("ArrayMesh_0g68g")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
+
+[node name="Cylinder_004" type="MeshInstance3D" parent="AeroBody3D/Rudder"]
+transform = Transform3D(-7.46394e-09, -6.40055e-08, 0.0995794, 0.0866629, -0.00968414, 8.98425e-09, 0.00151271, 0.554801, 1.28818e-08, -0.038214, 0.0244057, 0.000222713)
+mesh = SubResource("ArrayMesh_0g68g")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
+
+[node name="Elevator" type="Node3D" parent="AeroBody3D"]
+transform = Transform3D(-1, 1.52574e-09, -8.74095e-08, 0, 0.999848, 0.0174524, 8.74228e-08, 0.0174524, -0.999848, 4.76837e-07, -0.00786519, -0.404296)
+script = ExtResource("4_atjr0")
+manual_config = SubResource("Resource_pm1yp")
+wing_config = SubResource("Resource_xmxfo")
+actuation_config = SubResource("Resource_s8wdk")
+
+[node name="Cylinder_003" type="MeshInstance3D" parent="AeroBody3D/Elevator"]
+transform = Transform3D(-7.22438e-09, 7.11401e-08, -0.110644, 0.0838814, 0.0107636, -9.9825e-09, 0.00146416, -0.616643, -1.43131e-08, 0.029558, 0.0244062, 0.190749)
+mesh = SubResource("ArrayMesh_0g68g")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
+
+[node name="Cylinder_004" type="MeshInstance3D" parent="AeroBody3D/Elevator"]
+transform = Transform3D(-7.22438e-09, 7.11401e-08, 0.0995794, 0.0838814, 0.0107636, 8.98425e-09, 0.00146416, -0.616643, 1.28818e-08, -0.0382138, 0.0244057, 0.190749)
+mesh = SubResource("ArrayMesh_0g68g")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
+
+[node name="bodymesh" type="Node3D" parent="AeroBody3D"]
+transform = Transform3D(2.99799, 0, 0, 0, 2.99799, 0, 0, 0, 2.99799, 4.76837e-07, -0.0078648, -0.137878)
+
+[node name="Empty" type="Node3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(2.25891e-07, 1.89491, 2.10387e-07, -0.231678, 2.36426e-07, -1.88069, -1.88069, 1.98473e-07, 0.231678, 0, -0.115302, 0.597472)
 
-[node name="Cylinder_005" type="MeshInstance3D" parent="auv/bodymesh"]
+[node name="Cylinder_005" type="MeshInstance3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(0.0465624, 0, 0, 0, 0, -0.0465624, 0, 0.139687, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_37xob")
 skeleton = NodePath("")
 
-[node name="tail" type="MeshInstance3D" parent="auv/bodymesh"]
+[node name="tail" type="MeshInstance3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(0.0442836, 1.33117e-09, -0.0143886, -0.0143886, 8.40467e-09, -0.0442836, 4.43725e-10, 0.139687, 2.80157e-09, 0, 0, 0)
 mesh = SubResource("ArrayMesh_dv10o")
 skeleton = NodePath("")
 
-[node name="Cylinder_001" type="MeshInstance3D" parent="auv/bodymesh"]
+[node name="Cylinder_001" type="MeshInstance3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(0.0465624, 0, 0, 0, 0, -0.0465624, 0, 0.139687, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_4nrli")
 skeleton = NodePath("")
 
-[node name="Cylinder_002" type="MeshInstance3D" parent="auv/bodymesh"]
+[node name="Cylinder_002" type="MeshInstance3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(0.0465624, 0, 0, 0, 0, -0.0465624, 0, 0.139687, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_7rqhr")
 skeleton = NodePath("")
 
-[node name="Cylinder_003" type="MeshInstance3D" parent="auv/bodymesh"]
+[node name="Cylinder_003" type="MeshInstance3D" parent="AeroBody3D/bodymesh"]
 transform = Transform3D(0.0465624, 0, 0, 0, 0, -0.0465624, 0, 0.139687, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_0g68g")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="auv/bodymesh"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AeroBody3D/bodymesh"]
 libraries = {
 "": SubResource("AnimationLibrary_tjtmj")
 }
 autoplay = "Animation"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="auv"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AeroBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 4.76837e-07, -0.0078648, -0.137878)
 shape = SubResource("CapsuleShape3D_l4n6h")
 
-[node name="bubble_generator" type="GPUParticles3D" parent="auv"]
-transform = Transform3D(0.592017, 0, 0, 0, 0.592017, 0, 0, 0, 0.592017, 0, 0, -0.649228)
+[node name="bubble_generator" type="GPUParticles3D" parent="AeroBody3D"]
+transform = Transform3D(0.592017, 0, 0, 0, 0.592017, 0, 0, 0, 0.592017, 4.76837e-07, -0.0078648, -0.787106)
 material_override = ExtResource("3_frdic")
 amount = 50
 amount_ratio = 0.0
@@ -743,11 +885,11 @@ shape = SubResource("BoxShape3D_7raqg")
 
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, -1.91176, 3.03108)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, 1.75, 3.03108)
 script = ExtResource("14_u7ir7")
 priority = 10
 follow_mode = 6
-follow_target = NodePath("../auv")
+follow_target = NodePath("../AeroBody3D")
 tween_resource = SubResource("Resource_02aoh")
 tween_on_load = false
 camera_3d_resource = SubResource("Resource_dp3yu")
@@ -755,6 +897,44 @@ attributes = SubResource("CameraAttributesPractical_nafaq")
 follow_damping = true
 follow_distance = 3.5
 spring_length = 3.5
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -258.5
+offset_top = 6.0
+offset_right = -833.5
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("25_hqyxd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 266.5
+offset_right = 266.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FPSCounter" type="Label" parent="HUD/VBoxContainer"]
+layout_mode = 2
+text = "FPS Unknown"
+script = ExtResource("26_fof8h")
+
+[node name="Help" type="Label" parent="HUD/VBoxContainer"]
+layout_mode = 2
+text = "Controls
+--------
+w/s for thrust forward/backwards
+Enter/Esc binds and unbinds the mouse."
+
+[node name="ardupilot_sitl_json" type="Node" parent="."]
+script = ExtResource("27_0glnr")
 
 [connection signal="updated_lod" from="WaterShaderExamples/DeepOcean/WaterMaterialDesigner" to="WaterShaderExamples" method="_on_water_material_designer_updated_lod"]
 

@@ -11,16 +11,18 @@ config_version=5
 [application]
 
 config/name="torpedosim"
+run/main_scene="res://root.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
+AeroUnits="*res://addons/godot_aerodynamic_physics/core/singletons/aero_units.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/boujie_water_shader/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
+enabled=PackedStringArray("res://addons/boujie_water_shader/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
 
 [input]
 

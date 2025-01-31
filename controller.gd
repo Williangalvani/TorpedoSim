@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends AeroBody3D
 
 @onready var _player_pcam: PhantomCamera3D
 
@@ -15,22 +15,33 @@ var current_thrust: float = 0
 
 @export var upright_force: float = 1
 
+var bladder_buoyancy: float = 0
 @onready var thrusteranimation: AnimationPlayer
 @onready var bubbles: GPUParticles3D
+enum States {MOUSE_CONTROL, ACTUATOR_CONTROL}
+@export var initial_state = States.MOUSE_CONTROL
+var state: States
 
 func _ready() -> void:
+	super()
+	
 	thrusteranimation = $bodymesh/AnimationPlayer
 	_player_pcam = %PlayerPhantomCamera3D
 	bubbles = $bubble_generator
-	if _player_pcam.get_follow_mode() == _player_pcam.FollowMode.THIRD_PERSON:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	#thrusteranimation = $fishy.AnimationPlayer
+	self.state = initial_state
+	if self.initial_state == States.MOUSE_CONTROL:
+		if _player_pcam.get_follow_mode() == _player_pcam.FollowMode.THIRD_PERSON:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	$Rudder.aero_body = self
+	$Elevator.aero_body = self
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		self.state = States.ACTUATOR_CONTROL
 		return
 	if event.is_action_pressed("ui_accept"):
+		self.state = States.MOUSE_CONTROL
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		return
 	if _player_pcam.get_follow_mode() == _player_pcam.FollowMode.THIRD_PERSON:
@@ -56,6 +67,8 @@ func _process_logic() -> void:
 	pass
 
 func turn_to_camera_direction() -> void:
+	if self.state == States.ACTUATOR_CONTROL:
+		return
 	# Get desired forward direction from camera
 	var camera_forward = -_player_pcam.global_transform.basis.z.normalized()
 	
@@ -80,7 +93,7 @@ func is_in_water() -> bool:
 
 func apply_buoyancy() -> void:
 	if self.is_in_water():
-		var buoyancy_force = Vector3.UP * 9.81 * self.mass * 0.8
+		var buoyancy_force = Vector3.UP * 9.81 * (self.mass + bladder_buoyancy)
 		self.apply_central_force(buoyancy_force)
 
 func apply_thrust() -> void:
@@ -105,7 +118,8 @@ func apply_keep_upright() -> void:
 		# Add angular damping
 		angular_velocity *= 0.98
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	super(delta)
 	self.apply_buoyancy()
 	self.turn_to_camera_direction()
 	self.apply_thrust()

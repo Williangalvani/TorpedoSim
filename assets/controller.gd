@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends AeroBody3D
 
 @onready var _player_pcam: PhantomCamera3D
 
