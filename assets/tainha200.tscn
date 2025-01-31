@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://210hbbof773p"]
+
+[ext_resource type="PackedScene" uid="uid://bc7s0qfnhgw1h" path="res://assets/fishy.blend" id="1_3n22d"]
+
+[node name="fishy" instance=ExtResource("1_3n22d")]
+
+[node name="tail" parent="." index="2"]
+transform = Transform3D(0.0465625, 1.32571e-09, -1.93162e-17, 0, -6.10591e-09, -0.0465625, -4.41904e-10, 0.139687, -2.03531e-09, 0, 0, 0)
+
+[node name="AnimationPlayer" parent="." index="6"]
+autoplay = "Animation"
