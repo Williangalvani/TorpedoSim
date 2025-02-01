@@ -1,34 +1,34 @@
 [gd_scene load_steps=77 format=4 uid="uid://dexb5q1ladh3c"]
 
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_d8ovu"]
-[ext_resource type="Script" path="res://controller.gd" id="2_k7nql"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/water_shader_examples.gd" id="2_vg6i1"]
+[ext_resource type="Script" uid="uid://tkwj35pcr05q" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_d8ovu"]
+[ext_resource type="Script" uid="uid://do6ne2jmxeeb8" path="res://controller.gd" id="2_k7nql"]
+[ext_resource type="Script" uid="uid://ucbixullp741" path="res://example/boujie_water_shader/water_shader_examples.gd" id="2_vg6i1"]
 [ext_resource type="Material" uid="uid://bmgpuvvwh8rel" path="res://assets/bubble.tres" id="3_frdic"]
 [ext_resource type="PackedScene" uid="uid://ignpdv10rx52" path="res://addons/boujie_water_shader/prefabs/deep_ocean.tscn" id="3_hlscj"]
-[ext_resource type="Shader" path="res://example/boujie_water_shader/DropWithDistance.gdshader" id="4_3gpu7"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="4_arhx4"]
-[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="4_atjr0"]
+[ext_resource type="Shader" uid="uid://clj625k0ffyrk" path="res://example/boujie_water_shader/DropWithDistance.gdshader" id="4_3gpu7"]
+[ext_resource type="Script" uid="uid://bksuu6lpkvbmm" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="4_arhx4"]
+[ext_resource type="Script" uid="uid://bjm2vcbhb3a5o" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="4_atjr0"]
 [ext_resource type="Curve" uid="uid://bf3v5qwdrjkmt" path="res://addons/godot_aerodynamic_physics/core/resources/default_drag_aoa_curve.tres" id="5_1xccy"]
 [ext_resource type="Texture2D" uid="uid://dwsniss71hd03" path="res://example/boujie_water_shader/Sand.png" id="5_5b6db"]
 [ext_resource type="Curve" uid="uid://cx3q3y0bx1rv7" path="res://addons/godot_aerodynamic_physics/core/resources/default_lift_aoa_curve.tres" id="6_i7rkb"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/ocean_floor.gd" id="6_lrwah"]
-[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_config.gd" id="7_3ct5d"]
-[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/aero_surface_config.gd" id="8_bs3xk"]
-[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_axis_config.gd" id="9_ahgbx"]
-[ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_config.gd" id="10_at5uk"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="14_u7ir7"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="15_kdxh2"]
+[ext_resource type="Script" uid="uid://bhm8xg3svlay" path="res://example/boujie_water_shader/ocean_floor.gd" id="6_lrwah"]
+[ext_resource type="Script" uid="uid://bptihigsuatix" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_config.gd" id="7_3ct5d"]
+[ext_resource type="Script" uid="uid://bg2mw64w4idx1" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/aero_surface_config.gd" id="8_bs3xk"]
+[ext_resource type="Script" uid="uid://by4ysgk4wtw3c" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_axis_config.gd" id="9_ahgbx"]
+[ext_resource type="Script" uid="uid://bsbw1b0y4ja01" path="res://addons/godot_aerodynamic_physics/core/control_configs/aero_influencer_control_config.gd" id="10_at5uk"]
+[ext_resource type="Script" uid="uid://dpcbdnwakhig0" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="14_u7ir7"]
+[ext_resource type="Script" uid="uid://dmiyfdyk05s2s" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="15_kdxh2"]
 [ext_resource type="Environment" uid="uid://kw5c7bat248e" path="res://example/boujie_water_shader/MapEnvironment.tres" id="23_k3bok"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/underwater_fog.gd" id="24_rbbqb"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/hud.gd" id="25_hqyxd"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/fps_counter.gd" id="26_fof8h"]
-[ext_resource type="Script" path="res://ardupilot_sitl_json.gd" id="27_0glnr"]
-[ext_resource type="Script" path="res://example/boujie_water_shader/visibility_range_lod_group.gd" id="27_1p532"]
+[ext_resource type="Script" uid="uid://cxphidp2vspei" path="res://example/boujie_water_shader/underwater_fog.gd" id="24_rbbqb"]
+[ext_resource type="Script" uid="uid://b8i4k1j8mhuba" path="res://example/boujie_water_shader/hud.gd" id="25_hqyxd"]
+[ext_resource type="Script" uid="uid://b3ycbihp8m5vu" path="res://example/boujie_water_shader/fps_counter.gd" id="26_fof8h"]
+[ext_resource type="Script" uid="uid://dycyg1164rury" path="res://ardupilot_sitl_json.gd" id="27_0glnr"]
+[ext_resource type="Script" uid="uid://bk3wdw1h1j2gr" path="res://example/boujie_water_shader/visibility_range_lod_group.gd" id="27_1p532"]
 [ext_resource type="ArrayMesh" uid="uid://f85dvooifh0c" path="res://example/boujie_water_shader/mountains.obj" id="28_pqqnm"]
 [ext_resource type="Material" uid="uid://c7phyredymkgu" path="res://example/boujie_water_shader/mountain_material.tres" id="29_gd1f6"]
 [ext_resource type="Texture2D" uid="uid://3kpp1l04oqfu" path="res://example/boujie_water_shader/obelisk/StoneFloorTexture.png" id="30_mcp4g"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_4v4yk"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0dnjj"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
@@ -40,14 +40,13 @@ _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector
 point_count = 5
 
 [sub_resource type="Curve" id="Curve_ob7c7"]
-min_value = 1.0
-max_value = 1.69
+_limits = [0.99, 1.69, 0.0, 1.0]
 bake_resolution = 23
 _data = [Vector2(0.07, 1), 0.0, 0.0, 0, 0, Vector2(0.088, 1.519), 0.0, 0.0, 0, 0, Vector2(0.119, 1), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_cmcrd"]
-min_value = -1.0
+_limits = [-1.0, 1.0, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, -0.571), 0.0, 0.0, 0, 0, Vector2(0.375, -0.4), 0.0, 0.0, 0, 0, Vector2(0.403, -1), 0.0, 0.0, 0, 0, Vector2(0.597, 1), 0.0, 0.0, 0, 0, Vector2(0.625, 0.4), 0.0, 0.0, 0, 0, Vector2(0.75, 0.571), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 8
 
@@ -131,8 +130,7 @@ shadow_mesh = SubResource("ArrayMesh_18drh")
 albedo_color = Color(1, 1, 0.278431, 1)
 
 [sub_resource type="Curve" id="Curve_et0wi"]
-min_value = 1.0
-max_value = 1.69
+_limits = [0.99, 1.69, 0.0, 1.0]
 bake_resolution = 23
 _data = [Vector2(0.07, 1), 0.0, 0.0, 0, 0, Vector2(0.088, 1.519), 0.0, 0.0, 0, 0, Vector2(0.119, 1), 0.0, 0.0, 0, 0]
 point_count = 3
@@ -486,7 +484,7 @@ tracks/0/keys = PackedFloat32Array(0, 1, 0.698401, -0.110616, -0.110616, 0.69840
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tjtmj"]
 _data = {
-"spinprops": SubResource("Animation_15fd0")
+&"spinprops": SubResource("Animation_15fd0")
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l4n6h"]
@@ -501,6 +499,7 @@ emission_ring_axis = Vector3(0, 0, 1)
 emission_ring_height = 1.0
 emission_ring_radius = 1.0
 emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
 direction = Vector3(0, 0, -1)
 spread = 10.0
 initial_velocity_min = 6.85
@@ -538,6 +537,7 @@ subdivide_depth = 16
 render_priority = 0
 shader = ExtResource("4_3gpu7")
 shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("5_5b6db")
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
@@ -549,7 +549,6 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = null
 shader_parameter/drop_far = 2000.0
-shader_parameter/texture_albedo = ExtResource("5_5b6db")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7raqg"]
 size = Vector3(4012.49, 20.5966, 3276.69)
@@ -582,8 +581,9 @@ dof_blur_amount = 0.21
 [node name="Node3D" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
+physics_interpolation_mode = 1
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7.46609, 3.03108)
-attributes = SubResource("CameraAttributesPractical_4v4yk")
+attributes = SubResource("CameraAttributesPractical_0dnjj")
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
@@ -682,7 +682,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="AeroBody3D/bodymesh"]
 libraries = {
-"": SubResource("AnimationLibrary_tjtmj")
+&"": SubResource("AnimationLibrary_tjtmj")
 }
 autoplay = "Animation"
 
