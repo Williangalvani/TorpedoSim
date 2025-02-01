@@ -12,11 +12,14 @@ var calculated_acceleration
 var phys_time = 0
 var last_velocity
 var peer = null
+var last_servo_timestamp = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	start_time = Time.get_ticks_msec()
+	
 	last_velocity = Vector3(0,0,0)
+	
 	_initial_position = target_vehicle.get_global_transform().origin
 	set_physics_process(true)
 	connect_fmd_in()
@@ -30,11 +33,14 @@ func read_servos():
 		interface.set_dest_address("127.0.0.1", interface.get_packet_port())
 
 	if not interface.get_available_packet_count():
+		if (Time.get_ticks_msec() - last_servo_timestamp) > 1000:
+			$"../HUD/status".text = "Not coneected to Ardupilot"
 		if wait_SITL:
 			interface.wait()
 		else:
 			return
-
+	$"../HUD/status".text = ""
+	last_servo_timestamp = Time.get_ticks_msec()
 	var buffer = StreamPeerBuffer.new()
 	buffer.data_array = interface.get_packet()
 
@@ -49,7 +55,7 @@ func read_servos():
 		return
 		
 	var servos: Array[float] = []
-	var servos_as_string = ''
+	var servos_as_string = 'Servo data from autopilot:\n'
 	for i in range(0, 15):
 		buffer.seek(8 + i * 2)
 		var value = (float(buffer.get_u16()) - 1000.0) / 1000

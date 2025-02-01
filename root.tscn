@@ -28,7 +28,7 @@
 [ext_resource type="Material" uid="uid://c7phyredymkgu" path="res://example/boujie_water_shader/mountain_material.tres" id="29_gd1f6"]
 [ext_resource type="Texture2D" uid="uid://3kpp1l04oqfu" path="res://example/boujie_water_shader/obelisk/StoneFloorTexture.png" id="30_mcp4g"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_qicei"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_4v4yk"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
@@ -582,8 +582,8 @@ dof_blur_amount = 0.21
 [node name="Node3D" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7.46608, 3.03108)
-attributes = SubResource("CameraAttributesPractical_qicei")
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7.46609, 3.03108)
+attributes = SubResource("CameraAttributesPractical_4v4yk")
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
@@ -597,7 +597,6 @@ center_of_mass_mode = 1
 linear_damp_mode = 1
 angular_damp_mode = 1
 script = ExtResource("2_k7nql")
-show_debug = true
 
 [node name="Rudder" type="Node3D" parent="AeroBody3D"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.76837e-07, -0.0291609, -0.578478)
@@ -871,7 +870,7 @@ shape = SubResource("BoxShape3D_7raqg")
 
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, 7.46608, 3.03108)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, 7.46609, 3.03108)
 script = ExtResource("14_u7ir7")
 priority = 10
 follow_mode = 6
@@ -917,14 +916,15 @@ layout_mode = 2
 text = "Controls
 --------
 w/s for thrust forward/backwards
-Enter/Esc binds and unbinds the mouse."
+Enter/Esc binds and unbinds the mouse.
+Tab toggles the text UI"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
 layout_mode = 2
-offset_left = 1135.5
-offset_top = 240.0
-offset_right = 1187.5
-offset_bottom = 263.0
+offset_left = 1263.5
+offset_top = 200.0
+offset_right = 1315.5
+offset_bottom = 223.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -932,7 +932,13 @@ grow_vertical = 2
 layout_mode = 2
 text = "Servos
 "
-script = ExtResource("26_fof8h")
+
+[node name="status" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 822.5
+offset_top = 1.0
+offset_right = 862.5
+offset_bottom = 24.0
 
 [node name="ardupilot_sitl_json" type="Node3D" parent="." node_paths=PackedStringArray("target_vehicle")]
 script = ExtResource("27_0glnr")

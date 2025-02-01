@@ -71,7 +71,7 @@ func set_thruster_force(force: float) -> void:
 		bubbles.process_material.direction = Vector3(0,0,-1)
 		thrusteranimation.play("spinprops", -1, 2 * force)
 	elif force < -0.05:
-		current_thrust = force * -THRUSTER_FORCE
+		current_thrust = force * THRUSTER_FORCE
 		bubbles.amount_ratio = 1.0
 		bubbles.process_material.direction = Vector3(0,0,1)
 		thrusteranimation.play("spinprops", -1, -2 * force)
@@ -138,7 +138,7 @@ func apply_keep_upright() -> void:
 func actuate_servos(values: Array[float]):
 	if state == States.MOUSE_CONTROL:
 		return
-	var pitch = values[0]
+	var pitch = values[4]
 	var roll = values[1]
 	var thruster = values[2]
 	var yaw = values[3]
