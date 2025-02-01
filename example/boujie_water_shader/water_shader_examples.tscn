@@ -131,7 +131,6 @@ height = 160.0
 script = ExtResource("1_ksg8d")
 
 [node name="DeepOcean" parent="." instance=ExtResource("2_h6v04")]
-far_edge = 4000
 
 [node name="WaterMaterialDesigner" parent="DeepOcean" index="1"]
 wave_fade_far = 1440

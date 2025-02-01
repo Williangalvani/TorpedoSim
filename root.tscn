@@ -28,7 +28,7 @@
 [ext_resource type="Material" uid="uid://c7phyredymkgu" path="res://example/boujie_water_shader/mountain_material.tres" id="29_gd1f6"]
 [ext_resource type="Texture2D" uid="uid://3kpp1l04oqfu" path="res://example/boujie_water_shader/obelisk/StoneFloorTexture.png" id="30_mcp4g"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7vqf7"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_x6phx"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
@@ -583,7 +583,7 @@ dof_blur_amount = 0.21
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1.75, 3.03108)
-attributes = SubResource("CameraAttributesPractical_7vqf7")
+attributes = SubResource("CameraAttributesPractical_x6phx")
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
@@ -690,7 +690,6 @@ draw_pass_1 = SubResource("QuadMesh_7wa5j")
 script = ExtResource("2_vg6i1")
 
 [node name="DeepOcean" parent="WaterShaderExamples" instance=ExtResource("3_hlscj")]
-far_edge = 4000
 
 [node name="WaterMaterialDesigner" parent="WaterShaderExamples/DeepOcean" index="1"]
 wave_fade_far = 1440
@@ -933,8 +932,9 @@ text = "Controls
 w/s for thrust forward/backwards
 Enter/Esc binds and unbinds the mouse."
 
-[node name="ardupilot_sitl_json" type="Node" parent="."]
+[node name="ardupilot_sitl_json" type="Node3D" parent="." node_paths=PackedStringArray("target_vehicle")]
 script = ExtResource("27_0glnr")
+target_vehicle = NodePath("../AeroBody3D")
 
 [connection signal="updated_lod" from="WaterShaderExamples/DeepOcean/WaterMaterialDesigner" to="WaterShaderExamples" method="_on_water_material_designer_updated_lod"]
 
