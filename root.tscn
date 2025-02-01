@@ -28,7 +28,7 @@
 [ext_resource type="Material" uid="uid://c7phyredymkgu" path="res://example/boujie_water_shader/mountain_material.tres" id="29_gd1f6"]
 [ext_resource type="Texture2D" uid="uid://3kpp1l04oqfu" path="res://example/boujie_water_shader/obelisk/StoneFloorTexture.png" id="30_mcp4g"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_x6phx"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_qicei"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
@@ -69,10 +69,10 @@ drag_at_mach_multiplier_curve = SubResource("Curve_ob7c7")
 
 [sub_resource type="Resource" id="Resource_sgvcw"]
 script = ExtResource("8_bs3xk")
-chord = 0.36
-span = 0.57
+chord = 0.385
+span = 0.865
 auto_aspect_ratio = true
-aspect_ratio = 1.58333
+aspect_ratio = 2.24675
 
 [sub_resource type="Resource" id="Resource_kcr2m"]
 script = ExtResource("9_ahgbx")
@@ -82,7 +82,7 @@ easing = 1.0
 [sub_resource type="Resource" id="Resource_dsidn"]
 script = ExtResource("10_at5uk")
 enable_control = true
-max_value = Vector3(0.1, 0, 0)
+max_value = Vector3(1, 0, 0)
 limit_movement_speed = false
 movement_speed = 1.0
 yaw_config = SubResource("Resource_kcr2m")
@@ -168,7 +168,7 @@ easing = 2.63902
 [sub_resource type="Resource" id="Resource_s8wdk"]
 script = ExtResource("10_at5uk")
 enable_control = true
-max_value = Vector3(0.2, 0, 0)
+max_value = Vector3(1, 0, 0)
 limit_movement_speed = false
 movement_speed = 1.0
 pitch_config = SubResource("Resource_4upop")
@@ -582,8 +582,8 @@ dof_blur_amount = 0.21
 [node name="Node3D" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1.75, 3.03108)
-attributes = SubResource("CameraAttributesPractical_x6phx")
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7.46608, 3.03108)
+attributes = SubResource("CameraAttributesPractical_qicei")
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
@@ -591,6 +591,7 @@ process_physics_priority = 300
 script = ExtResource("1_d8ovu")
 
 [node name="AeroBody3D" type="VehicleBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.71609, 0)
 mass = 5.0
 center_of_mass_mode = 1
 linear_damp_mode = 1
@@ -606,13 +607,13 @@ wing_config = SubResource("Resource_sgvcw")
 actuation_config = SubResource("Resource_dsidn")
 
 [node name="Cylinder_003" type="MeshInstance3D" parent="AeroBody3D/Rudder"]
-transform = Transform3D(-7.46394e-09, -6.40055e-08, -0.110644, 0.0866629, -0.00968414, -9.98249e-09, 0.00151272, 0.5548, -1.43131e-08, 0.0295579, 0.0244062, 0.000222713)
+transform = Transform3D(-7.46394e-09, -6.40055e-08, -0.110644, 0.0866629, -0.00968414, -9.98249e-09, 0.00151272, 0.5548, -1.43131e-08, 0.0295577, 0.00146033, 0.000222743)
 mesh = SubResource("ArrayMesh_0g68g")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
 
 [node name="Cylinder_004" type="MeshInstance3D" parent="AeroBody3D/Rudder"]
-transform = Transform3D(-7.46394e-09, -6.40055e-08, 0.0995794, 0.0866629, -0.00968414, 8.98425e-09, 0.00151271, 0.554801, 1.28818e-08, -0.038214, 0.0244057, 0.000222713)
+transform = Transform3D(-7.46394e-09, -6.40055e-08, 0.0995794, 0.0866629, -0.00968414, 8.98425e-09, 0.00151271, 0.554801, 1.28818e-08, -0.0382142, 0.00145983, 0.000222743)
 mesh = SubResource("ArrayMesh_0g68g")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
@@ -635,6 +636,18 @@ transform = Transform3D(-7.22438e-09, 7.11401e-08, 0.0995794, 0.0838814, 0.01076
 mesh = SubResource("ArrayMesh_0g68g")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_ovxuv")
+
+[node name="Elevator2" type="Node3D" parent="AeroBody3D"]
+transform = Transform3D(-1, 1.52574e-09, -8.74095e-08, 0, 0.999848, 0.0174524, 8.74228e-08, 0.0174524, -0.999848, 4.76837e-07, -0.00786495, 0.269763)
+script = ExtResource("4_atjr0")
+manual_config = SubResource("Resource_pm1yp")
+wing_config = SubResource("Resource_xmxfo")
+
+[node name="Elevator3" type="Node3D" parent="AeroBody3D"]
+transform = Transform3D(4.37114e-08, 0.999848, 0.0174524, 1, -4.52305e-08, 8.66466e-08, 8.74228e-08, 0.0174524, -0.999848, 4.76837e-07, -0.00786495, 0.269763)
+script = ExtResource("4_atjr0")
+manual_config = SubResource("Resource_pm1yp")
+wing_config = SubResource("Resource_xmxfo")
 
 [node name="bodymesh" type="Node3D" parent="AeroBody3D"]
 transform = Transform3D(2.99799, 0, 0, 0, 2.99799, 0, 0, 0, 2.99799, 4.76837e-07, -0.0078648, -0.137878)
@@ -710,32 +723,6 @@ shape = 4
 material = SubResource("FogMaterial_irst1")
 script = ExtResource("24_rbbqb")
 visible_height_offset = 5.0
-
-[node name="HUD" type="Control" parent="WaterShaderExamples"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = 6.0
-offset_right = -566.0
-offset_bottom = -9.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("25_hqyxd")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="WaterShaderExamples/HUD"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="FPSCounter" type="Label" parent="WaterShaderExamples/HUD/VBoxContainer"]
-layout_mode = 2
-text = "FPS Unknown"
-script = ExtResource("26_fof8h")
 
 [node name="VisibilityRangeLodGroup" type="Node3D" parent="WaterShaderExamples"]
 script = ExtResource("27_1p532")
@@ -884,7 +871,7 @@ shape = SubResource("BoxShape3D_7raqg")
 
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, 1.75, 3.03108)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, 0, 7.46608, 3.03108)
 script = ExtResource("14_u7ir7")
 priority = 10
 follow_mode = 6
@@ -931,6 +918,21 @@ text = "Controls
 --------
 w/s for thrust forward/backwards
 Enter/Esc binds and unbinds the mouse."
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
+layout_mode = 2
+offset_left = 1135.5
+offset_top = 240.0
+offset_right = 1187.5
+offset_bottom = 263.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Servos" type="Label" parent="HUD/VBoxContainer2"]
+layout_mode = 2
+text = "Servos
+"
+script = ExtResource("26_fof8h")
 
 [node name="ardupilot_sitl_json" type="Node3D" parent="." node_paths=PackedStringArray("target_vehicle")]
 script = ExtResource("27_0glnr")

@@ -47,9 +47,16 @@ func read_servos():
 
 	if magic != 18458:
 		return
+		
+	var servos: Array[float] = []
+	var servos_as_string = ''
 	for i in range(0, 15):
 		buffer.seek(8 + i * 2)
-		target_vehicle.actuate_servo(i, (float(buffer.get_u16()) - 1000) / 1000)
+		var value = (float(buffer.get_u16()) - 1000.0) / 1000
+		servos_as_string += "%d: %f\n" % [i, value]
+		servos.append(value -0.5)
+	target_vehicle.actuate_servos(servos)
+	$"../HUD/VBoxContainer2/Servos".text = servos_as_string
 
 
 func send_fdm():
@@ -97,10 +104,9 @@ func send_fdm():
 	buffer.put_utf8_string(JSON_string)
 	interface.put_packet(buffer.data_array)
 
+
 func _process(delta):
 	phys_time = phys_time + 1.0 / 60 # Globals.physics_rate
-	#process_keys()
-	print("processing")
 	calculated_acceleration = (target_vehicle.linear_velocity - last_velocity) / delta
 	calculated_acceleration.y += 10
 	last_velocity = target_vehicle.linear_velocity

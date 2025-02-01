@@ -1,5 +1,7 @@
 extends AeroBody3D
 
+class_name AUV
+
 @onready var _player_pcam: PhantomCamera3D
 
 @export var mouse_sensitivity: float = 0.05
@@ -62,7 +64,22 @@ func _input(event: InputEvent) -> void:
 		bubbles.amount_ratio = 0.0
 		thrusteranimation.stop()
 
-
+func set_thruster_force(force: float) -> void:
+	current_thrust = force * THRUSTER_FORCE
+	if force > 0.05:
+		bubbles.amount_ratio = force
+		bubbles.process_material.direction = Vector3(0,0,-1)
+		thrusteranimation.play("spinprops", -1, 2 * force)
+	elif force < -0.05:
+		current_thrust = force * -THRUSTER_FORCE
+		bubbles.amount_ratio = 1.0
+		bubbles.process_material.direction = Vector3(0,0,1)
+		thrusteranimation.play("spinprops", -1, -2 * force)
+	else:
+		current_thrust = 0
+		bubbles.amount_ratio = 0.0
+		thrusteranimation.stop()
+		
 func _process_logic() -> void:
 	pass
 
@@ -117,6 +134,17 @@ func apply_keep_upright() -> void:
 		
 		# Add angular damping
 		angular_velocity *= 0.98
+
+func actuate_servos(values: Array[float]):
+	if state == States.MOUSE_CONTROL:
+		return
+	var pitch = values[0]
+	var roll = values[1]
+	var thruster = values[2]
+	var yaw = values[3]
+	self.control_command = Vector3(pitch * PI/2, yaw * PI/2, roll * PI/2)
+	self.set_thruster_force(thruster)
+
 
 func _physics_process(delta: float) -> void:
 	super(delta)
