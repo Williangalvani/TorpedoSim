@@ -35,6 +35,7 @@ func read_servos():
 	if not interface.get_available_packet_count():
 		if (Time.get_ticks_msec() - last_servo_timestamp) > 1000:
 			$"../HUD/status".text = "Not coneected to Ardupilot"
+			$"../HUD/VBoxContainer2/Servos".text = "No servo data"
 		if wait_SITL:
 			interface.wait()
 		else:
