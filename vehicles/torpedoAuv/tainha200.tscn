@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://210hbbof773p"]
 
-[ext_resource type="PackedScene" uid="uid://bc7s0qfnhgw1h" path="res://assets/fishy.blend" id="1_3n22d"]
+[ext_resource type="PackedScene" uid="uid://bc7s0qfnhgw1h" path="res://vehicles/torpedoAuv/fishy.blend" id="1_3n22d"]
 
 [node name="fishy" instance=ExtResource("1_3n22d")]
 

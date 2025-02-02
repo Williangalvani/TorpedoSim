@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cq7pmsmdcyuvb"
-path.s3tc="res://.godot/imported/suspended_particles_A.png-edcfc334808767369e924efb3b3da1a2.s3tc.ctex"
+path.s3tc="res://.godot/imported/suspended_particles_A.png-1c63f16671e64d70e46aaa90e1b37975.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/suspended_particles_A.png"
-dest_files=["res://.godot/imported/suspended_particles_A.png-edcfc334808767369e924efb3b3da1a2.s3tc.ctex"]
+source_file="res://vehicles/shared/suspended_particles_A.png"
+dest_files=["res://.godot/imported/suspended_particles_A.png-1c63f16671e64d70e46aaa90e1b37975.s3tc.ctex"]
 
 [params]
 

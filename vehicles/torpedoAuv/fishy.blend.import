@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://bc7s0qfnhgw1h"
-path="res://.godot/imported/fishy.blend-6a8d2511b6613746f1c9211b95a0ef59.scn"
+path="res://.godot/imported/fishy.blend-f6fcd68bc733eb387d61d4196c1366ea.scn"
 
 [deps]
 
-source_file="res://assets/fishy.blend"
-dest_files=["res://.godot/imported/fishy.blend-6a8d2511b6613746f1c9211b95a0ef59.scn"]
+source_file="res://vehicles/torpedoAuv/fishy.blend"
+dest_files=["res://.godot/imported/fishy.blend-f6fcd68bc733eb387d61d4196c1366ea.scn"]
 
 [params]
 

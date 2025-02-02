@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bmgpuvvwh8rel"]
 
-[ext_resource type="Texture2D" uid="uid://cq7pmsmdcyuvb" path="res://assets/suspended_particles_A.png" id="1_umraq"]
+[ext_resource type="Texture2D" uid="uid://cq7pmsmdcyuvb" path="res://vehicles/shared/suspended_particles_A.png" id="1_w2npa"]
 
 [sub_resource type="Shader" id="Shader_0py5e"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable's StandardMaterial3D.
@@ -58,7 +58,7 @@ void fragment() {
 render_priority = 0
 shader = SubResource("Shader_0py5e")
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/texture_albedo = ExtResource("1_umraq")
+shader_parameter/texture_albedo = ExtResource("1_w2npa")
 shader_parameter/point_size = 0.1
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
