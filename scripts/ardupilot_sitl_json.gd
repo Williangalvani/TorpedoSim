@@ -2,8 +2,13 @@ extends Node
 
 class_name ArdupilotSitlJson
 
+# Vehicle Node. Must implement actuate_servos(values: float[])
 @export var target_vehicle: VehicleBody3D
-@onready var wait_SITL = false
+# Port to listen for JSON data, Ardupilot's default is 9002
+@export var JSON_PORT: int = 9002
+# Pause the simulator while waiting for ardupilot data, effectively a lock-step system
+@export var wait_SITL = false
+
 @onready var start_time
 @onready var _initial_position
 
@@ -25,7 +30,7 @@ func _ready() -> void:
 	connect_fmd_in()
 
 func connect_fmd_in():
-	if interface.bind(9002) != OK:
+	if interface.bind(JSON_PORT) != OK:
 		print("Failed to connect fdm_in")
 
 func read_servos():
@@ -73,7 +78,7 @@ func send_fdm():
 
 	var _basis = target_vehicle.transform.basis
 
-# These are the same but mean different things, let's keep both for now
+	# These are the same but mean different things, let's keep both for now
 	var toNED = Basis(Vector3(-1, 0, 0), Vector3(0, 0, -1), Vector3(1, 0, 0))
 
 	toNED = Basis(Vector3(1, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0))
