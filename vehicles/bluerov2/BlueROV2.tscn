@@ -1,0 +1,109 @@
+[gd_scene load_steps=6 format=3 uid="uid://dcmatypv41wok"]
+
+[ext_resource type="PackedScene" uid="uid://dnwjcp1o61wjd" path="res://vehicles/bluerov2/bluerov.blend" id="1_r28ki"]
+[ext_resource type="Script" uid="uid://ct83wcfwy5rlp" path="res://vehicles/bluerov2/controller.gd" id="2_3rbkl"]
+[ext_resource type="Script" uid="uid://22euvlelg8br" path="res://addons/arrow3d/arrow_3d.gd" id="2_bo3xx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3rbkl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3rbkl"]
+size = Vector3(0.554077, 0.305664, 0.442383)
+
+[node name="BlueRov2" type="RigidBody3D"]
+mass = 13.0
+linear_damp = 1.0
+angular_damp = 1.5
+script = ExtResource("2_3rbkl")
+THRUSTER_FORCE = 15
+
+[node name="bluerov" parent="." instance=ExtResource("1_r28ki")]
+
+[node name="t1" type="Marker3D" parent="."]
+transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, -0.102176, 0.0334729, 0.129919)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t2" type="Marker3D" parent="."]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.118301, 0.0334729, 0.130344)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t3" type="Marker3D" parent="."]
+transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, -0.102176, 0.0334729, -0.150063)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t4" type="Marker3D" parent="."]
+transform = Transform3D(-0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, -0.866025, 0.118301, 0.0334729, -0.149638)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t5" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.218572, 0.0952773, 0.120681)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t6" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.230856, 0.0952773, 0.120681)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t7" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.216848, 0.0952773, -0.125946)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="t8" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.232096, 0.0952773, -0.125533)
+visible = false
+gizmo_extents = 0.0
+script = ExtResource("2_bo3xx")
+arrow_size = 0.1
+arrow_thickness = 0.01
+arrow_material = SubResource("StandardMaterial3D_3rbkl")
+metadata/_custom_type_script = "uid://22euvlelg8br"
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 7.64274e-15, -8.74228e-08, 1, -8.74228e-08, 0, -8.74228e-08, -1, 0, 0.102008, 0.168237)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0122681, 0.074707, -0.00244141)
+shape = SubResource("BoxShape3D_3rbkl")
+
+[node name="buoyancy" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0112718, 0.141105, 0)

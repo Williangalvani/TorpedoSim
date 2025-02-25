@@ -21,7 +21,7 @@ var bladder_buoyancy: float = 0
 @onready var thrusteranimation: AnimationPlayer
 @onready var bubbles: GPUParticles3D
 enum States {MOUSE_CONTROL, ACTUATOR_CONTROL}
-@export var initial_state = States.MOUSE_CONTROL
+@export var initial_state = States.ACTUATOR_CONTROL
 var state: States
 
 func _ready() -> void:

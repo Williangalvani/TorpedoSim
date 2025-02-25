@@ -3,63 +3,61 @@ extends Node
 class_name ArdupilotSitlJson
 
 # Vehicle Node. Must implement actuate_servos(values: float[])
-@export var target_vehicle: VehicleBody3D
+@export var target_vehicle: RigidBody3D
 # Port to listen for JSON data, Ardupilot's default is 9002
 @export var JSON_PORT: int = 9002
 # Pause the simulator while waiting for ardupilot data, effectively a lock-step system
 @export var wait_SITL = false
 
-@onready var start_time
-@onready var _initial_position
-
-var interface = PacketPeerUDP.new()  # UDP socket for fdm in (server)
-var calculated_acceleration
-var phys_time = 0
-var last_velocity
-var peer = null
-var last_servo_timestamp = 0
+@onready var start_time: int
+@onready var _initial_position: Vector3
+var socket := WebSocketPeer.new()
+var calculated_acceleration: Vector3
+var phys_time: float = 0
+var last_velocity: Vector3
+var last_servo_timestamp: int = 0
+var last_connection_attempt: int = 0
+const RECONNECT_DELAY_MS = 2000  # Wait 1 second between connection attempts
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func _ready():
+	# Get the `window` object, where globally defined functions are.
+	var window = JavaScriptBridge.get_interface("window")
 	start_time = Time.get_ticks_msec()
-	
-	last_velocity = Vector3(0,0,0)
-	
+	last_velocity = Vector3.ZERO
 	_initial_position = target_vehicle.get_global_transform().origin
 	set_physics_process(true)
-	connect_fmd_in()
+	connect_to_server()
 
-func connect_fmd_in():
-	if interface.bind(JSON_PORT) != OK:
-		print("Failed to connect fdm_in")
+func connect_to_server() -> void:
+	var websocket_url = "ws://192.168.15.8:9002"
+	if OS.has_feature('web'):
+		print("browser detected")
+		websocket_url = JavaScriptBridge.eval('window.location.origin.replace("http","ws")') + "/ws_sitl/"
+	print("Connecting to ArduPilot WebSocket server at ", websocket_url)
+	var result =  socket.connect_to_url(websocket_url, TLSOptions.client_unsafe())
+	if result != OK:
+		print("Failed to connect to ArduPilot server at ", websocket_url)
+		print(result)
+		$"../HUD/status".text = "Failed to connect to ArduPilot"
+	else:
+		print("connection successful")
+	last_connection_attempt = Time.get_ticks_msec()
 
-func read_servos():
-	if not peer:
-		interface.set_dest_address("127.0.0.1", interface.get_packet_port())
-
-	if not interface.get_available_packet_count():
-		if (Time.get_ticks_msec() - last_servo_timestamp) > 1000:
-			$"../HUD/status".text = "Not coneected to Ardupilot"
-			$"../HUD/VBoxContainer2/Servos".text = "No servo data"
-		if wait_SITL:
-			interface.wait()
-		else:
-			return
-	$"../HUD/status".text = ""
-	last_servo_timestamp = Time.get_ticks_msec()
+func handle_servos(data: PackedByteArray) -> void:
 	var buffer = StreamPeerBuffer.new()
-	buffer.data_array = interface.get_packet()
-
+	buffer.data_array = data
+	
 	var magic = buffer.get_u16()
+	if magic != 18458:
+		print("Invalid magic number: ", magic)
+		return
+		
 	buffer.seek(2)
 	var _framerate = buffer.get_u16()
-	#print(_framerate)
 	buffer.seek(4)
 	var _framecount = buffer.get_u16()
 
-	if magic != 18458:
-		return
-		
 	var servos: Array[float] = []
 	var servos_as_string = 'Servo data from autopilot:\n'
 	for i in range(0, 15):
@@ -69,32 +67,29 @@ func read_servos():
 		servos.append(value -0.5)
 	target_vehicle.actuate_servos(servos)
 	$"../HUD/VBoxContainer2/Servos".text = servos_as_string
+	last_servo_timestamp = Time.get_ticks_msec()
+	$"../HUD/status".text = "Connected to ArduPilot"
 
-
-func send_fdm():
+func send_fdm() -> void:
+	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		$"../HUD/status".text = "Not connected to ArduPilot"
+		return
+		
 	var buffer = StreamPeerBuffer.new()
-
 	buffer.put_double((Time.get_ticks_msec() - start_time) / 1000.0)
 
 	var _basis = target_vehicle.transform.basis
 
-	# These are the same but mean different things, let's keep both for now
-	var toNED = Basis(Vector3(-1, 0, 0), Vector3(0, 0, -1), Vector3(1, 0, 0))
-
-	toNED = Basis(Vector3(1, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0))
-
+	var toNED = Basis(Vector3(1, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0))
 	var toFRD = Basis(Vector3(0, -1, 0), Vector3(0, 0, -1), Vector3(1, 0, 0))
-
+	
 	var _angular_velocity = toFRD * (target_vehicle.angular_velocity * _basis)
 	var gyro = [_angular_velocity.x, _angular_velocity.y, _angular_velocity.z]
 
 	var _acceleration = toFRD * (calculated_acceleration * _basis)
-
 	var accel = [_acceleration.x, _acceleration.y, _acceleration.z]
 
-	# var orientation = toFRD.xform(Vector3(-rotation.x, - rotation.y, -rotation.z))
 	var quaternon = Basis(-_basis.z, _basis.x, _basis.y).rotated(Vector3(1, 0, 0), PI).rotated(Vector3(1, 0, 0), PI / 2).get_rotation_quaternion()
-
 	var euler = quaternon.get_euler()
 	euler = [euler.y, euler.x, euler.z]
 
@@ -113,14 +108,31 @@ func send_fdm():
 		"velocity": velo
 	}
 	var JSON_string = "\n" + JSON.stringify(JSON_fmt) + "\n"
-	buffer.put_utf8_string(JSON_string)
-	interface.put_packet(buffer.data_array)
+	socket.send_text(JSON_string)
 
+func _process(_delta: float) -> void:
+	socket.poll()
+	
+	var state = socket.get_ready_state()
+	match state:
+		WebSocketPeer.STATE_OPEN:
+			while socket.get_available_packet_count():
+				handle_servos(socket.get_packet())
+		WebSocketPeer.STATE_CLOSED, WebSocketPeer.STATE_CLOSING:
+			print("connection lost")
+			$"../HUD/status".text = "Disconnected from ArduPilot"
+			# Try to reconnect after delay
+			if Time.get_ticks_msec() - last_connection_attempt >= RECONNECT_DELAY_MS:
+				connect_to_server()
+		WebSocketPeer.STATE_CONNECTING:
+			$"../HUD/status".text = "Connecting to ArduPilot..."
 
-func _process(delta):
-	phys_time = phys_time + 1.0 / 60 # Globals.physics_rate
+func _physics_process(delta: float) -> void:
+	phys_time = phys_time + delta
 	calculated_acceleration = (target_vehicle.linear_velocity - last_velocity) / delta
 	calculated_acceleration.y += 10
 	last_velocity = target_vehicle.linear_velocity
-	read_servos()
 	send_fdm()
+
+func _exit_tree() -> void:
+	socket.close()
