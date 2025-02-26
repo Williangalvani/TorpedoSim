@@ -1,10 +1,17 @@
 extends RigidBody3D
 
+# BlueROV2 Controller
+# This file should contain all BLUEROV2-specific logic.
+# That includes processing the servo outputs into thrusters, applying custom physics,
+# and handling peripherals, such as the camera lights, and gripper
+
 @export var THRUSTER_FORCE = 2
 
+# last servo values received from the server
 var servos = []
 
 func _ready():
+  # initialize servos to neutral
 	for i in range(8):
 		servos.append(0.5)
 
@@ -12,9 +19,6 @@ func add_force_local(force: Vector3, pos: Vector3):
 	var pos_local = self.transform.basis * pos
 	var force_local = self.transform.basis * force
 	self.apply_force(force_local, pos_local)
-
-func _process_logic() -> void:
-	pass
 
 func is_in_water() -> bool:
 	return self.global_position.y < 0
@@ -25,13 +29,19 @@ func apply_buoyancy() -> void:
 		self.apply_force(buoyancy_force, self.transform.basis * $buoyancy.position)
 
 func actuate_servos(values: Array[float]):
+  # update the last servo values received from the server
+  # called when we get a new servo message from the server
 	servos = values
 
 func set_thrusters():
+  # apply the last servo values received from the server to the thrusters
+  # called on every physics update
 	for i in range(8):
 		actuate_servo(i, servos[i])
 
 func actuate_servo(id, percentage):
+  # translantes the percentage into a force, and applies it to the thruster
+  # called on every physics update
 	if percentage == 0:
 		return
 
@@ -82,6 +92,7 @@ func actuate_servo(id, percentage):
 
 
 func _unhandled_input(event):
+  # handle keyboard input for debugging
 	var thrust = 30
 	if event is InputEventKey:
 		# There are for debugging:
@@ -115,6 +126,6 @@ func _unhandled_input(event):
 			self.apply_central_force(Vector3(0, -thrust, 0))
 	
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	self.set_thrusters()
 	self.apply_buoyancy()
