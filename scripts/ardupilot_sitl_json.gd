@@ -11,6 +11,11 @@ class_name ArdupilotSitlJson
 
 @onready var start_time: int
 @onready var _initial_position: Vector3
+
+signal status_updated
+signal sitl_packet_rate_updated
+signal servos_updated
+
 var socket := WebSocketPeer.new()
 var calculated_acceleration: Vector3
 var phys_time: float = 0
@@ -66,9 +71,11 @@ func handle_servos(data: PackedByteArray) -> void:
 		servos_as_string += "%d: %f\n" % [i, value]
 		servos.append(value -0.5)
 	target_vehicle.actuate_servos(servos)
-	$"../HUD/VBoxContainer2/Servos".text = servos_as_string
+	servos_updated.emit(servos_as_string)
+	var packet_frequency = 1 / (Time.get_ticks_msec() - last_servo_timestamp)
+	sitl_packet_rate_updated.emit(packet_frequency)
 	last_servo_timestamp = Time.get_ticks_msec()
-	$"../HUD/HBoxContainer/statuspanel/status".text = "Connected to ArduPilot"
+	status_updated.emit("Connected to ArduPilot")
 
 func send_fdm() -> void:
 	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:

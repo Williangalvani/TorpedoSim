@@ -3,7 +3,7 @@ Realistic Water Shader for GODOT 3.1.1
 
 Copyright (c) 2019 UnionBytes, Achim Menzel (alias AiYori)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the \"Software\"), to deal in the Software
 without restriction, including without limitation the rights to use, copy, modify,
 merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
@@ -83,7 +83,7 @@ vec4 wave(vec4 parameter, vec2 position, float time, inout vec3 tangent, inout v
 	vec2	d				 = normalize(parameter.xy);
 	float 	f 				 = k * (dot(d, position) - c * time);
 	float 	a				 = wave_steepness / k;
-	
+
 			tangent			+= normalize(vec3(1.0-d.x * d.x * (wave_steepness * sin(f)), d.x * (wave_steepness * cos(f)), -d.x * d.y * (wave_steepness * sin(f))));
 			binormal		+= normalize(vec3(-d.x * d.y * (wave_steepness * sin(f)), d.y * (wave_steepness * cos(f)), 1.0-d.y * d.y * (wave_steepness * sin(f))));
 
@@ -95,30 +95,30 @@ vec4 wave(vec4 parameter, vec2 position, float time, inout vec3 tangent, inout v
 void vertex()
 {
 	float	time			 = TIME * wave_speed;
-	
+
 	vec4	vertex			 = vec4(VERTEX, 1.0);
 	vec3	vertex_position  = (MODEL_MATRIX * vertex).xyz;
-	
+
 			vertex_tangent 	 = vec3(0.0, 0.0, 0.0);
 		 	vertex_binormal  = vec3(0.0, 0.0, 0.0);
-	
+
 			vertex 			+= wave(wave_a, vertex_position.xz, time, vertex_tangent, vertex_binormal);
 			vertex 			+= wave(wave_b, vertex_position.xz, time, vertex_tangent, vertex_binormal);
 			vertex 			+= wave(wave_c, vertex_position.xz, time, vertex_tangent, vertex_binormal);
-	
+
 			vertex_position  = vertex.xyz;
-	
+
 			vertex_height	 = (PROJECTION_MATRIX * MODELVIEW_MATRIX * vertex).z;
-	
+
 			TANGENT			 = vertex_tangent;
 			BINORMAL		 = vertex_binormal;
 			vertex_normal	 = normalize(cross(vertex_binormal, vertex_tangent));
 			NORMAL			 = vertex_normal;
-		
+
 			UV				 = vertex.xz * sampler_scale;
-	
+
 			VERTEX			 = vertex.xyz;
-			
+
 			inv_mvp = inverse(PROJECTION_MATRIX * MODELVIEW_MATRIX);
 }
 
@@ -131,26 +131,26 @@ void fragment()
 	vec2 	uv_sampler_uv 				 = UV * uv_sampler_scale + uv_offset;
 	vec2	uv_sampler_uv_offset 		 = uv_sampler_strength * texture(uv_sampler, uv_sampler_uv).rg * 2.0 - 1.0;
 	vec2 	uv 							 = UV + uv_sampler_uv_offset;
-	
+
 	// Normalmap:
 	vec3 	normalmap					 = texture(normalmap_a_sampler, uv - uv_offset*2.0).rgb * 0.75;		// 75 % sampler A
 			normalmap 					+= texture(normalmap_b_sampler, uv + uv_offset).rgb * 0.25;			// 25 % sampler B
-	
+
 	// Refraction UV:
 	vec3	ref_normalmap				 = normalmap * 2.0 -1.0;
 			ref_normalmap				 = normalize(vertex_tangent*ref_normalmap.x + vertex_binormal*ref_normalmap.y + vertex_normal*ref_normalmap.z);
 	vec2 	ref_uv						 = SCREEN_UV + (ref_normalmap.xy * refraction) / vertex_height;
-	
+
 	// Ground depth:
 	float	depth_blend_pow				 = 0.0;
 
 	// Ground color:
 	vec3 	screen_color 				 = textureLod(SCREEN_TEXTURE, ref_uv, depth_blend_pow * 2.5).rgb;
-	
+
 	vec3 	dye_color 					 = mix(color_shallow.rgb, ambient_color.rgb, depth_blend_pow);
 	vec3	color 						 = mix(screen_color*dye_color, dye_color*0.25, depth_blend_pow*0.5);
-	
-	
+
+
 		// Set all values:
 	vec3 world_view = (INV_VIEW_MATRIX * vec4(VIEW, 0.0)).xyz;
 	float transparency_map = 1.0 - step(0.25, pow(max(0.0, dot(ref_normalmap, world_view)), 2.0));

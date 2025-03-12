@@ -55,6 +55,16 @@ func _on_menu_id_pressed(id: int) -> void:
 			$BoxContainer.visible = !$BoxContainer.visible
 		_:
 			print(\"unkown button id: \", id)
+
+
+func _on_ardupilot_sitl_json_servos_updated(text: String) -> void:
+	$HBoxContainer/Panel2/Servos.text = text
+
+func _on_ardupilot_sitl_json_sitl_packet_rate_updated(rate: float) -> void:
+	$HBoxContainer/VBoxContainer/SitlPanel/SITLCounter.text = \"SITL: \" + str(rate)
+
+func _on_ardupilot_sitl_json_status_updated(newStatus: String) -> void:
+	$HBoxContainer/statuspanel/status.text = newStatus
 "
 
 [sub_resource type="GDScript" id="GDScript_huihk"]
@@ -293,5 +303,8 @@ offset_right = 360.0
 offset_bottom = 35.0
 text = "X"
 
+[connection signal="servos_updated" from="ardupilot_sitl_json" to="HUD" method="_on_ardupilot_sitl_json_servos_updated"]
+[connection signal="sitl_packet_rate_updated" from="ardupilot_sitl_json" to="HUD" method="_on_ardupilot_sitl_json_sitl_packet_rate_updated"]
+[connection signal="status_updated" from="ardupilot_sitl_json" to="HUD" method="_on_ardupilot_sitl_json_status_updated"]
 [connection signal="id_pressed" from="HUD/MenuBar/Menu" to="HUD" method="_on_menu_id_pressed"]
 [connection signal="pressed" from="HUD/HelpPanel/close" to="HUD" method="_on_close_pressed"]
