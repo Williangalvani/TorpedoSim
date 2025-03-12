@@ -21,11 +21,11 @@ func add_force_local(force: Vector3, pos: Vector3):
 	self.apply_force(force_local, pos_local)
 
 func is_in_water() -> bool:
-	return self.global_position.y < 0
+	return self.global_position.y < -0.05
 
 func apply_buoyancy() -> void:
 	if self.is_in_water():
-		var buoyancy_force = Vector3.UP * 9.81 * (self.mass *1.01)
+		var buoyancy_force = Vector3.UP * 9.81 * (self.mass *1.01) * 1.24
 		self.apply_force(buoyancy_force, self.transform.basis * $buoyancy.position)
 
 func actuate_servos(values: Array[float]):

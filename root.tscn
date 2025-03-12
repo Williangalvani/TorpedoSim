@@ -1,12 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://dexb5q1ladh3c"]
+[gd_scene load_steps=19 format=3 uid="uid://dexb5q1ladh3c"]
 
 [ext_resource type="Script" uid="uid://dn2iiggam5oap" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_d8ovu"]
 [ext_resource type="Script" uid="uid://bexuq78pisr7h" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="4_arhx4"]
+[ext_resource type="Material" uid="uid://cqgrgysdqshgm" path="res://scenery/shaders/underwater.tres" id="10_tw3kd"]
 [ext_resource type="Script" uid="uid://elg28fu8agvw" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="14_u7ir7"]
 [ext_resource type="Script" uid="uid://cjqijvfg1dvo5" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="15_kdxh2"]
-[ext_resource type="PackedScene" uid="uid://cph5chv4qmdr3" path="res://scenery/pool/pool.blend" id="18_blcw0"]
-[ext_resource type="Script" uid="uid://fu8728nlah12" path="res://example/boujie_water_shader/hud.gd" id="25_hqyxd"]
-[ext_resource type="Script" uid="uid://d3jyoxe0xb3lo" path="res://example/boujie_water_shader/fps_counter.gd" id="26_fof8h"]
+[ext_resource type="PackedScene" uid="uid://daxrdeelqexb5" path="res://scenery/pool/pool.blend" id="18_blcw0"]
 [ext_resource type="Script" uid="uid://dycyg1164rury" path="res://scripts/ardupilot_sitl_json.gd" id="27_0glnr"]
 [ext_resource type="PackedScene" uid="uid://dcmatypv41wok" path="res://vehicles/bluerov2/BlueROV2.tscn" id="28_uwexw"]
 
@@ -22,8 +21,51 @@ background_mode = 2
 sky = SubResource("Sky_50g4q")
 tonemap_mode = 2
 glow_enabled = true
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0, 0.570063, 0.923435, 1)
+fog_density = 1.0
+fog_height = 3.25
+fog_height_density = 0.037
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_huihk"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_gd4vy"]
+material = ExtResource("10_tw3kd")
+
+[sub_resource type="GDScript" id="GDScript_bf3um"]
+script/source = "extends Control
+
+
+func _input(event):
+	if event.is_action_pressed(\"ui_focus_next\"):
+		visible = !visible
+	if event.is_action_pressed(\"cancel\"):
+		$HelpPanel.visible = false
+
+
+func _on_close_pressed() -> void:
+	# close help panel
+	$HelpPanel.visible = false
+
+
+func _on_menu_id_pressed(id: int) -> void:
+	match id:
+		0: # Toggle FPS
+			$HBoxContainer/VBoxContainer/FpsPanel.visible = !$HBoxContainer/VBoxContainer/FpsPanel.visible
+		1: # Toggle external view
+			$BoxContainer.visible = !$BoxContainer.visible
+		_:
+			print(\"unkown button id: \", id)
+"
+
+[sub_resource type="GDScript" id="GDScript_huihk"]
+script/source = "extends Label
+
+
+func _process(_delta):
+	text = \"FPS: \" + str(Performance.get_monitor(Performance.TIME_FPS))
+"
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_bf3um"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 5.99
 dof_blur_near_enabled = true
@@ -60,87 +102,6 @@ dof_blur_amount = 0.21
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3dlgs")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-physics_interpolation_mode = 1
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.234108, -0.755961, 1.62612)
-attributes = SubResource("CameraAttributesPractical_huihk")
-
-[node name="PhantomCameraHost" type="Node" parent="Camera3D"]
-process_priority = 300
-process_physics_priority = 300
-script = ExtResource("1_d8ovu")
-
-[node name="PlayerPhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, -0.234108, -0.755961, 1.62612)
-script = ExtResource("14_u7ir7")
-priority = 10
-follow_mode = 6
-follow_target = NodePath("../BlueRov2")
-tween_resource = SubResource("Resource_02aoh")
-tween_on_load = false
-camera_3d_resource = SubResource("Resource_dp3yu")
-attributes = SubResource("CameraAttributesPractical_nafaq")
-follow_damping = true
-follow_damping_value = Vector3(0.01, 0.01, 0.01)
-
-[node name="HUD" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -258.5
-offset_top = 6.0
-offset_right = -833.5
-offset_bottom = -9.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("25_hqyxd")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 266.5
-offset_right = 266.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="FPSCounter" type="Label" parent="HUD/VBoxContainer"]
-layout_mode = 2
-text = "FPS Unknown"
-script = ExtResource("26_fof8h")
-
-[node name="Help" type="Label" parent="HUD/VBoxContainer"]
-layout_mode = 2
-text = "Controls
---------
-w/s for thrust forward/backwards
-Enter/Esc binds and unbinds the mouse.
-Tab toggles the text UI"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
-layout_mode = 2
-offset_left = 1263.5
-offset_top = 200.0
-offset_right = 1315.5
-offset_bottom = 223.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Servos" type="Label" parent="HUD/VBoxContainer2"]
-layout_mode = 2
-text = "Servos
-"
-
-[node name="status" type="Label" parent="HUD"]
-layout_mode = 0
-offset_left = 822.5
-offset_top = 1.0
-offset_right = 862.5
-offset_bottom = 24.0
-
 [node name="ardupilot_sitl_json" type="Node3D" parent="." node_paths=PackedStringArray("target_vehicle")]
 script = ExtResource("27_0glnr")
 target_vehicle = NodePath("../BlueRov2")
@@ -148,5 +109,189 @@ target_vehicle = NodePath("../BlueRov2")
 [node name="BlueRov2" parent="." instance=ExtResource("28_uwexw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.234108, -1.25596, 0.760101)
 
-[node name="pool2" parent="." instance=ExtResource("18_blcw0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.161316, -0.919709, -0.67847)
+[node name="pool" parent="." instance=ExtResource("18_blcw0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.899796, -1.37067, -0.885834)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="pool"]
+transform = Transform3D(10, 0, 0, 0, -1, 1.50996e-06, 0, -1.50996e-07, -10, 0, 1.47815, 0)
+mesh = SubResource("PlaneMesh_gd4vy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.995114, -0.0325745, -0.0932007, 0.0987293, 0.328326, 0.939391, 0, -0.944003, 0.329938, 0, 3.06963, 0)
+shadow_enabled = true
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_bf3um")
+
+[node name="MenuBar" type="MenuBar" parent="HUD"]
+layout_mode = 2
+prefer_global_menu = false
+
+[node name="Menu" type="PopupMenu" parent="HUD/MenuBar"]
+size = Vector2i(211, 116)
+item_count = 4
+item_0/text = "Toggle FPS"
+item_0/id = 0
+item_1/text = "Toggle External View"
+item_1/id = 1
+item_2/text = "Toggle SITL step-sync"
+item_2/id = 2
+item_3/text = "(TODO) Change SITL url"
+item_3/id = 3
+item_3/disabled = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 577.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -376.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="statuspanel" type="Panel" parent="HUD/HBoxContainer"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="status" type="Label" parent="HUD/HBoxContainer/statuspanel"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 84.0
+offset_bottom = 23.0
+text = "asdadasdd"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/HBoxContainer"]
+layout_mode = 2
+
+[node name="FpsPanel" type="Panel" parent="HUD/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+
+[node name="FPSCounter" type="Label" parent="HUD/HBoxContainer/VBoxContainer/FpsPanel"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 111.0
+offset_bottom = 28.0
+text = "FPS: N/A"
+script = SubResource("GDScript_huihk")
+
+[node name="SitlPanel" type="Panel" parent="HUD/HBoxContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+
+[node name="SITLCounter" type="Label" parent="HUD/HBoxContainer/VBoxContainer/SitlPanel"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 111.0
+offset_bottom = 28.0
+text = "SITL: N/A"
+
+[node name="Panel2" type="Panel" parent="HUD/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Servos" type="Label" parent="HUD/HBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 52.0
+offset_bottom = 49.0
+text = "Servos
+"
+
+[node name="BoxContainer" type="BoxContainer" parent="HUD"]
+layout_mode = 1
+offset_right = 512.0
+offset_bottom = 512.0
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HUD/BoxContainer"]
+z_index = -1
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SubViewport" type="SubViewport" parent="HUD/BoxContainer/SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="HUD/BoxContainer/SubViewportContainer/SubViewport"]
+physics_interpolation_mode = 1
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -0.234108, -0.755961, 1.62612)
+attributes = SubResource("CameraAttributesPractical_bf3um")
+
+[node name="PhantomCameraHost" type="Node" parent="HUD/BoxContainer/SubViewportContainer/SubViewport/Camera3D"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("1_d8ovu")
+
+[node name="PlayerPhantomCamera3D" type="Node3D" parent="HUD/BoxContainer/SubViewportContainer/SubViewport" node_paths=PackedStringArray("follow_target")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.499999, 0, -0.5, 0.866023, -0.234108, -0.755961, 1.62612)
+script = ExtResource("14_u7ir7")
+priority = 10
+follow_mode = 6
+follow_target = NodePath("../../../../../BlueRov2")
+tween_resource = SubResource("Resource_02aoh")
+tween_on_load = false
+camera_3d_resource = SubResource("Resource_dp3yu")
+attributes = SubResource("CameraAttributesPractical_nafaq")
+follow_damping_value = Vector3(0.01, 0.01, 0.01)
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
+layout_mode = 2
+offset_left = 982.0
+offset_top = 116.0
+offset_right = 1034.0
+offset_bottom = 165.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HelpPanel" type="Panel" parent="HUD"]
+layout_mode = 0
+offset_left = 431.0
+offset_top = 240.0
+offset_right = 796.0
+offset_bottom = 398.0
+
+[node name="Help" type="Label" parent="HUD/HelpPanel"]
+layout_mode = 2
+offset_left = 16.0
+offset_top = 7.0
+offset_right = 350.0
+offset_bottom = 150.0
+text = "Controls
+--------
+w/s for thrust forward/backwards
+Enter/Esc binds and unbinds the mouse.
+Tab toggles the text UI"
+
+[node name="close" type="Button" parent="HUD/HelpPanel"]
+layout_mode = 0
+offset_left = 333.0
+offset_top = 4.0
+offset_right = 360.0
+offset_bottom = 35.0
+text = "X"
+
+[connection signal="id_pressed" from="HUD/MenuBar/Menu" to="HUD" method="_on_menu_id_pressed"]
+[connection signal="pressed" from="HUD/HelpPanel/close" to="HUD" method="_on_close_pressed"]

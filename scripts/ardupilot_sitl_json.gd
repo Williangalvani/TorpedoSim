@@ -68,11 +68,11 @@ func handle_servos(data: PackedByteArray) -> void:
 	target_vehicle.actuate_servos(servos)
 	$"../HUD/VBoxContainer2/Servos".text = servos_as_string
 	last_servo_timestamp = Time.get_ticks_msec()
-	$"../HUD/status".text = "Connected to ArduPilot"
+	$"../HUD/HBoxContainer/statuspanel/status".text = "Connected to ArduPilot"
 
 func send_fdm() -> void:
 	if socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
-		$"../HUD/status".text = "Not connected to ArduPilot"
+		$"../HUD/HBoxContainer/statuspanel/status".text = "Not connected to ArduPilot"
 		return
 		
 	var buffer = StreamPeerBuffer.new()
@@ -119,13 +119,12 @@ func _process(_delta: float) -> void:
 			while socket.get_available_packet_count():
 				handle_servos(socket.get_packet())
 		WebSocketPeer.STATE_CLOSED, WebSocketPeer.STATE_CLOSING:
-			print("connection lost")
-			$"../HUD/status".text = "Disconnected from ArduPilot"
+			$"../HUD/HBoxContainer/statuspanel/status".text = "Disconnected from ArduPilot"
 			# Try to reconnect after delay
 			if Time.get_ticks_msec() - last_connection_attempt >= RECONNECT_DELAY_MS:
 				connect_to_server()
 		WebSocketPeer.STATE_CONNECTING:
-			$"../HUD/status".text = "Connecting to ArduPilot..."
+			$"../HUD/HBoxContainer/statuspanel/status".text = "Connecting to ArduPilot..."
 
 func _physics_process(delta: float) -> void:
 	phys_time = phys_time + delta
