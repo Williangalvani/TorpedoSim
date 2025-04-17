@@ -201,7 +201,6 @@ text = "FPS: N/A"
 script = SubResource("GDScript_huihk")
 
 [node name="SitlPanel" type="Panel" parent="HUD/HBoxContainer/VBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(100, 35)
 layout_mode = 2
 

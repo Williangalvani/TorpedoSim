@@ -37,14 +37,13 @@ func _ready():
 func connect_to_server() -> void:
 	var websocket_url = "ws://192.168.15.8:9002"
 	if OS.has_feature('web'):
-		print("browser detected")
-		websocket_url = JavaScriptBridge.eval('window.location.origin.replace("http","ws")') + "/ws_sitl/"
+		websocket_url = JavaScriptBridge.eval('window.location.origin.replace("http","ws")') + "/ws_sitl/"	
 	print("Connecting to ArduPilot WebSocket server at ", websocket_url)
 	var result =  socket.connect_to_url(websocket_url, TLSOptions.client_unsafe())
 	if result != OK:
 		print("Failed to connect to ArduPilot server at ", websocket_url)
 		print(result)
-		$"../HUD/status".text = "Failed to connect to ArduPilot"
+		status_updated.emit("Failed to connect to ArduPilot")
 	else:
 		print("connection successful")
 	last_connection_attempt = Time.get_ticks_msec()
@@ -126,12 +125,12 @@ func _process(_delta: float) -> void:
 			while socket.get_available_packet_count():
 				handle_servos(socket.get_packet())
 		WebSocketPeer.STATE_CLOSED, WebSocketPeer.STATE_CLOSING:
-			$"../HUD/HBoxContainer/statuspanel/status".text = "Disconnected from ArduPilot"
+			status_updated.emit("Disconnected from ArduPilot")
 			# Try to reconnect after delay
 			if Time.get_ticks_msec() - last_connection_attempt >= RECONNECT_DELAY_MS:
 				connect_to_server()
 		WebSocketPeer.STATE_CONNECTING:
-			$"../HUD/HBoxContainer/statuspanel/status".text = "Connecting to ArduPilot..."
+			status_updated.emit("Connecting to ArduPilot...")
 
 func _physics_process(delta: float) -> void:
 	phys_time = phys_time + delta
