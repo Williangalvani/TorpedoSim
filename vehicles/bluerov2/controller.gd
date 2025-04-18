@@ -25,7 +25,7 @@ func is_in_water() -> bool:
 
 func apply_buoyancy() -> void:
 	if self.is_in_water():
-		var buoyancy_force = Vector3.UP * 9.81 * (self.mass *1.01) * 1.24
+		var buoyancy_force = Vector3.UP * 9.81 * (self.mass *1.01)
 		self.apply_force(buoyancy_force, self.transform.basis * $buoyancy.position)
 
 func actuate_servos(values: Array[float]):
