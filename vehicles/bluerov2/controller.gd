@@ -11,9 +11,9 @@ extends RigidBody3D
 var servos = []
 
 func _ready():
-  # initialize servos to neutral
+	# initialize servos to neutral
 	for i in range(8):
-		servos.append(0.5)
+		servos.append(0.0)
 
 func add_force_local(force: Vector3, pos: Vector3):
 	var pos_local = self.transform.basis * pos
@@ -29,19 +29,19 @@ func apply_buoyancy() -> void:
 		self.apply_force(buoyancy_force, self.transform.basis * $buoyancy.position)
 
 func actuate_servos(values: Array[float]):
-  # update the last servo values received from the server
-  # called when we get a new servo message from the server
+	# update the last servo values received from the server
+	# called when we get a new servo message from the server
 	servos = values
 
 func set_thrusters():
-  # apply the last servo values received from the server to the thrusters
-  # called on every physics update
+	# apply the last servo values received from the server to the thrusters
+	# called on every physics update
 	for i in range(8):
 		actuate_servo(i, servos[i])
 
 func actuate_servo(id, percentage):
-  # translantes the percentage into a force, and applies it to the thruster
-  # called on every physics update
+	# translantes the percentage into a force, and applies it to the thruster
+	# called on every physics update
 	if percentage == 0:
 		return
 
@@ -92,7 +92,7 @@ func actuate_servo(id, percentage):
 
 
 func _unhandled_input(event):
-  # handle keyboard input for debugging
+	# handle keyboard input for debugging
 	var thrust = 30
 	if event is InputEventKey:
 		# There are for debugging:
@@ -125,7 +125,22 @@ func _unhandled_input(event):
 		if event.pressed and event.keycode == KEY_C:
 			self.apply_central_force(Vector3(0, -thrust, 0))
 	
+func check_joystick() -> void:
+	var velocity = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards")
+	if velocity.length() > 0.01:
+		print(velocity)
+		# Convert input to body-frame force
+		var body_force = transform.basis * Vector3(-velocity.x, 0, -velocity.y) * 10
+		self.apply_central_force(body_force)
+	var target_camera = Input.get_vector("look_right", "look_left", "look_down", "look_up")
+	# apply yaw force
+	var yaw_force = transform.basis * Vector3(0, target_camera.x, 0) * 2
+	self.apply_torque(yaw_force)
+	$Camera.rotation_degrees.x = clamp($Camera.rotation_degrees.x + target_camera.y, -45, 45)
+	var throttle = Input.get_axis("go_down", "go_up")
+	self.apply_central_force(transform.basis * Vector3.UP*10*throttle)
 
 func _physics_process(_delta: float) -> void:
 	self.set_thrusters()
 	self.apply_buoyancy()
+	self.check_joystick()
