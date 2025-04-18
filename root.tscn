@@ -61,7 +61,7 @@ func _on_ardupilot_sitl_json_servos_updated(text: String) -> void:
 	$HBoxContainer/Panel2/Servos.text = text
 
 func _on_ardupilot_sitl_json_sitl_packet_rate_updated(rate: float) -> void:
-	$HBoxContainer/VBoxContainer/SitlPanel/SITLCounter.text = \"SITL: \" + str(rate)
+	$HBoxContainer/VBoxContainer/SitlPanel/SITLCounter.text = \"SITL: \" + str(\"%0.2f\" % rate)
 
 func _on_ardupilot_sitl_json_status_updated(newStatus: String) -> void:
 	$HBoxContainer/statuspanel/status.text = newStatus

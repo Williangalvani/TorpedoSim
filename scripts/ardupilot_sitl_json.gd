@@ -80,7 +80,6 @@ func read_udp_servos() -> void:
 		else:
 			return
 	
-	last_servo_timestamp = Time.get_ticks_msec()
 	handle_servos(interface.get_packet())
 
 func handle_servos(data: PackedByteArray) -> void:
@@ -107,6 +106,7 @@ func handle_servos(data: PackedByteArray) -> void:
 	target_vehicle.actuate_servos(servos)
 	servos_updated.emit(servos_as_string)
 	var packet_frequency = 1000.0 / (Time.get_ticks_msec() - last_servo_timestamp + 1)  # +1 to avoid division by zero
+	last_servo_timestamp = Time.get_ticks_msec()
 	sitl_packet_rate_updated.emit(packet_frequency)
 	status_updated.emit("Connected to ArduPilot")
 
