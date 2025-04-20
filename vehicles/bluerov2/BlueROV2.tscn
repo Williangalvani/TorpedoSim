@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcmatypv41wok"]
+[gd_scene load_steps=8 format=3 uid="uid://dcmatypv41wok"]
 
 [ext_resource type="PackedScene" uid="uid://dnwjcp1o61wjd" path="res://vehicles/bluerov2/bluerov.blend" id="1_r28ki"]
 [ext_resource type="Script" uid="uid://dwh5y1y2r0s08" path="res://vehicles/bluerov2/controller.gd" id="2_3rbkl"]
@@ -7,7 +7,11 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3rbkl"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3rbkl"]
-size = Vector3(0.554077, 0.305664, 0.442383)
+size = Vector3(0.415802, 0.258179, 0.442383)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_3rbkl"]
+height = 0.109619
+radius = 0.0375977
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3rbkl"]
 properties/0/path = NodePath(".:position")
@@ -111,8 +115,12 @@ arrow_material = SubResource("StandardMaterial3D_3rbkl")
 transform = Transform3D(-1, -8.74228e-08, 7.64274e-15, -8.74228e-08, 1, -8.74228e-08, 0, -8.74228e-08, -1, 0, 0.102008, 0.168237)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0122681, 0.074707, -0.00244141)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0151825, 0.0509643, -0.00244141)
 shape = SubResource("BoxShape3D_3rbkl")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.126125, 0.204081, 0)
+shape = SubResource("CylinderShape3D_3rbkl")
 
 [node name="buoyancy" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0112718, 0.141105, 0)
