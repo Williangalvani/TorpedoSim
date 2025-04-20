@@ -128,15 +128,19 @@ func remove_multiplayer_peer():
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_player_connected(id):
-	player_info["peerid"] = multiplayer.get_unique_id()
-	player_info["simple_id"] = players.size()
-	players[id] = player_info
-	_register_player.rpc_id(id, player_info)
+	var new_player_info = {
+		"name": str(id),
+		"peerid": id,
+		"simple_id": players.size()
+	}
+	players[id] = new_player_info
+	_register_player.rpc_id(id, new_player_info)
 	var new_player = player_scene.instantiate()
 	new_player.name = str(id)
+	new_player.player_info = new_player_info
 	$players.add_child(new_player, true)
-	new_player.set_id(id)
 	pprint("player %s connected" % id)
+	pprint(str(players))
 
 # this runs on clients
 @rpc("any_peer", "reliable")

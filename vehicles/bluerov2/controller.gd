@@ -7,6 +7,7 @@ extends RigidBody3D
 
 @export var THRUSTER_FORCE = 2
 @export var player_id = -1
+@export var player_info = {}
 # last servo values received from the server
 var servos = []
 
@@ -18,12 +19,6 @@ func _ready():
 	# initialize servos to neutral
 	for i in range(8):
 		servos.append(0.0)
-
-func set_id(id):
-	print("id set to", id)
-	self.player_id = id
-	$Sprite3D/Label3D.text = str(id)
-	#self.set_multiplayer_authority(id)
 
 func add_force_local(force: Vector3, pos: Vector3):
 	var pos_local = self.transform.basis * pos
