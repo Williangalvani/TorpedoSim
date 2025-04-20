@@ -47,14 +47,15 @@ func _ready():
 func join_game(address = ""):
 	self.pprint("joining")
 	if address.is_empty():
-		address = DEFAULT_SERVER_IP
+		if OS.has_feature('web'):
+			address = JavaScriptBridge.eval('window.location.origin.replace("http","ws")') + "/bluesim_ws/"	
+		else:
+			address = "ws://" + DEFAULT_SERVER_IP + ":" + str(PORT)
 	
 	var peer = WebSocketMultiplayerPeer.new()
-	# Always use ws:// protocol (not wss://) to ensure TLS is disabled
-	var url = "ws://%s:%s" % [address, PORT]
-	pprint("Connecting to: %s" % url)
-	
-	var error = peer.create_client(url)
+
+	var error = peer.create_client(address)
+
 	if error:
 		print("error joining: ", error)
 		return error
