@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw13nw4j6p2vu"]
+
+[ext_resource type="Script" uid="uid://e8my1t4xqord" path="res://menu/main_menu.gd" id="1_0gkbj"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0gkbj")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 81.0
+offset_right = 615.0
+offset_bottom = 119.0
+text = "Open server"
+
+[node name="Button2" type="Button" parent="."]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 124.0
+offset_right = 615.0
+offset_bottom = 162.0
+text = "Connect to server"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_connect_pressed"]

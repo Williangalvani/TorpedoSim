@@ -37,7 +37,8 @@ var last_servo_timestamp: int = 0
 func _ready():
 	start_time = Time.get_ticks_msec()
 	last_velocity = Vector3.ZERO
-	_initial_position = target_vehicle.get_global_transform().origin
+	if target_vehicle:
+		_initial_position = target_vehicle.get_global_transform().origin
 	set_physics_process(true)
 	
 	if connection_type == 0:  # UDP mode
@@ -88,7 +89,7 @@ func handle_servos(data: PackedByteArray) -> void:
 	
 	var magic = buffer.get_u16()
 	if magic != 18458:
-		print("Invalid magic number: ", magic)
+		#print("Invalid magic number: ", magic)
 		return
 		
 	buffer.seek(2)
@@ -191,6 +192,8 @@ func process_websocket() -> void:
 			status_updated.emit("Connecting to ArduPilot...")
 
 func _physics_process(delta: float) -> void:
+	if not target_vehicle:
+		return
 	phys_time = phys_time + delta
 	calculated_acceleration = (target_vehicle.linear_velocity - last_velocity) / delta
 	calculated_acceleration.y += 10

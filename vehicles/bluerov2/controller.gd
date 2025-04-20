@@ -6,14 +6,24 @@ extends RigidBody3D
 # and handling peripherals, such as the camera lights, and gripper
 
 @export var THRUSTER_FORCE = 2
-
+@export var player_id = -1
 # last servo values received from the server
 var servos = []
+
+func _enter_tree():
+	$Sprite3D/Label3D.text = name
+	set_multiplayer_authority(int(str(name)))
 
 func _ready():
 	# initialize servos to neutral
 	for i in range(8):
 		servos.append(0.0)
+
+func set_id(id):
+	print("id set to", id)
+	self.player_id = id
+	$Sprite3D/Label3D.text = str(id)
+	#self.set_multiplayer_authority(id)
 
 func add_force_local(force: Vector3, pos: Vector3):
 	var pos_local = self.transform.basis * pos
@@ -93,6 +103,8 @@ func actuate_servo(id, percentage):
 
 func _unhandled_input(event):
 	# handle keyboard input for debugging
+	if !is_multiplayer_authority():
+		return
 	var thrust = 30
 	if event is InputEventKey:
 		# There are for debugging:
@@ -141,6 +153,8 @@ func check_joystick() -> void:
 	self.apply_central_force(transform.basis * Vector3.UP*10*throttle)
 
 func _physics_process(_delta: float) -> void:
+	if !is_multiplayer_authority():
+		return
 	self.set_thrusters()
 	self.apply_buoyancy()
 	self.check_joystick()
