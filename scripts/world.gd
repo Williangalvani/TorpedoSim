@@ -7,8 +7,10 @@ signal player_disconnected(peer_id)
 signal server_disconnected
 
 const PORT = 7000
+const ALTERNATIVE_PORTS = [7001, 7002, 7003, 8000]  # Alternative ports to try if main port fails
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
 const MAX_CONNECTIONS = 20
+const USE_WSS = false # Keep this false to disable TLS/SSL
 
 # This will contain player info for every player,
 # with the keys being each player's unique IDs.
@@ -42,21 +44,29 @@ func join_game(address = ""):
 	print("joining")
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
-	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_client(address, PORT)
+	
+	var peer = WebSocketMultiplayerPeer.new()
+	# Always use ws:// protocol (not wss://) to ensure TLS is disabled
+	var url = "ws://%s:%s" % [address, PORT]
+	print("Connecting to: ", url)
+	
+	var error = peer.create_client(url)
 	if error:
-		print("error joining")
+		print("error joining: ", error)
 		return error
 	multiplayer.multiplayer_peer = peer
-	var id = str(multiplayer.get_unique_id())
+
 	await get_tree().create_timer(2.0).timeout 
-	
+	var id = str(multiplayer.get_unique_id())
 	# Loop through children to find the one matching our ID
 	var my_bluerov = null
 	for child in $players.get_children():
 		if child.name == id:
 			my_bluerov = child
 			break
+	print($players.get_children())
+	print("my name", id)
+	print("my rov:", my_bluerov)
 	%PlayerPhantomCamera3D.follow_target = my_bluerov
 	
 	# If we found our vehicle, look for a camera in its children and make it active
@@ -82,12 +92,33 @@ func _find_camera_in_node(node):
 	return null
 
 func create_game():
-	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_server(PORT, MAX_CONNECTIONS)
-	if error:
-		return error
+	var peer = WebSocketMultiplayerPeer.new()
+	var ports_to_try = [PORT] + ALTERNATIVE_PORTS
+	var success = false
+	var last_error = 0
+	var used_port = PORT
+	
+	# Try each port until one works
+	for port in ports_to_try:
+		# Explicitly pass null as the TLS options to ensure TLS is disabled
+		var error = peer.create_server(port, "127.0.0.1", null)
+		if error == OK:
+			success = true
+			used_port = port
+			break
+		else:
+			last_error = error
+			print("Failed to create server on port %d: Error %d" % [port, error])
+	
+	if not success:
+		print("ERROR: Could not create WebSocket server on any port. Last error: ", last_error)
+		if last_error == ERR_UNAVAILABLE:
+			print("The server port may already be in use. Try closing other applications or restarting your device.")
+		return last_error
+	
+	print("WebSocket server created successfully on port: ", used_port)
 	multiplayer.multiplayer_peer = peer
-
+	
 	players[1] = player_info
 	player_connected.emit(1, player_info)
 
