@@ -95,23 +95,19 @@ func _find_camera_in_node(node):
 
 func create_game():
 	var peer = WebSocketMultiplayerPeer.new()
-	var ports_to_try = [PORT] + ALTERNATIVE_PORTS
 	var success = false
 	var last_error = 0
 	var used_port = PORT
 	
-	# Try each port until one works
-	for port in ports_to_try:
-		# Explicitly pass null as the TLS options to ensure TLS is disabled
-		var error = peer.create_server(port, "127.0.0.1", null)
-		if error == OK:
-			success = true
-			used_port = port
-			break
-		else:
-			last_error = error
-			print("Failed to create server on port %d: Error %d" % [port, error])
-	
+
+	# Explicitly pass null as the TLS options to ensure TLS is disabled
+	var error = peer.create_server(PORT, "127.0.0.1", null)
+	if error == OK:
+		success = true
+	else:
+		last_error = error
+		print("Failed to create server on port %d: Error %d" % [PORT, error])
+
 	if not success:
 		print("ERROR: Could not create WebSocket server on any port. Last error: ", last_error)
 		if last_error == ERR_UNAVAILABLE:
@@ -134,6 +130,7 @@ func _on_player_connected(id):
 		"simple_id": players.size()
 	}
 	players[id] = new_player_info
+	# this will make "id" client know who it is
 	_register_player.rpc_id(id, new_player_info)
 	var new_player = player_scene.instantiate()
 	new_player.name = str(id)
