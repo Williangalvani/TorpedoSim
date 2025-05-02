@@ -5,7 +5,7 @@ extends RigidBody3D
 # That includes processing the servo outputs into thrusters, applying custom physics,
 # and handling peripherals, such as the camera lights, and gripper
 
-@export var THRUSTER_FORCE = 2
+@export var THRUSTER_FORCE = 10
 
 # last servo values received from the server
 var servos = []
@@ -134,9 +134,9 @@ func check_joystick() -> void:
 		self.apply_central_force(body_force)
 	var target_camera = Input.get_vector("look_right", "look_left", "look_down", "look_up")
 	# apply yaw force
-	var yaw_force = transform.basis * Vector3(0, target_camera.x, 0) * 2
+	var yaw_force = transform.basis * Vector3(0, target_camera.x, 0) * 7.5
 	self.apply_torque(yaw_force)
-	$Camera.rotation_degrees.x = clamp($Camera.rotation_degrees.x + target_camera.y, -45, 45)
+	$Camera.rotation_degrees.x = clamp($Camera.rotation_degrees.x + target_camera.y*2, -45, 45)
 	var throttle = Input.get_axis("go_down", "go_up")
 	self.apply_central_force(transform.basis * Vector3.UP*10*throttle)
 
