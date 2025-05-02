@@ -47,12 +47,13 @@ func _ready():
 		connect_websocket()
 
 func connect_udp() -> void:
-	if interface.bind(JSON_PORT) != OK:
-		print("Failed to connect UDP on port ", JSON_PORT)
+	var actual_port = JSON_PORT + Globals.player_info.simple_id
+	if interface.bind(actual_port) != OK:
+		print("Failed to connect UDP on port ", actual_port)
 		status_updated.emit("Failed to connect UDP")
 	else:
-		print("UDP bound to port ", JSON_PORT)
-		status_updated.emit("UDP listening on port " + str(JSON_PORT))
+		print("UDP bound to port ", actual_port)
+		status_updated.emit("UDP listening on port " + str(actual_port))
 
 func connect_websocket() -> void:
 	var websocket_url = "ws://192.168.15.8:9002"

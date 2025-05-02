@@ -12,7 +12,8 @@ extends RigidBody3D
 var servos = []
 
 func _enter_tree():
-	$Sprite3D/Label3D.text = name
+	if Globals.player_info != null:
+		$Sprite3D/Label3D.text = str(Globals.player_info["simple_id"])
 	set_multiplayer_authority(int(str(name)))
 
 func _ready():

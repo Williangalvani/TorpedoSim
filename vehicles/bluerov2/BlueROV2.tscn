@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcmatypv41wok"]
+[gd_scene load_steps=9 format=3 uid="uid://dcmatypv41wok"]
 
 [ext_resource type="PackedScene" uid="uid://dnwjcp1o61wjd" path="res://vehicles/bluerov2/bluerov.blend" id="1_r28ki"]
 [ext_resource type="Script" uid="uid://dwh5y1y2r0s08" path="res://vehicles/bluerov2/controller.gd" id="2_3rbkl"]
 [ext_resource type="Script" uid="uid://bm81h5m5i7orm" path="res://addons/arrow3d/arrow_3d.gd" id="2_bo3xx"]
+[ext_resource type="Script" uid="uid://dycyg1164rury" path="res://scripts/ardupilot_sitl_json.gd" id="2_eo5cp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3rbkl"]
 
@@ -36,6 +37,9 @@ linear_damp = 1.0
 angular_damp = 1.5
 script = ExtResource("2_3rbkl")
 THRUSTER_FORCE = 15
+
+[node name="ardupilot_sitl_json" type="Node3D" parent="."]
+script = ExtResource("2_eo5cp")
 
 [node name="bluerov" parent="." instance=ExtResource("1_r28ki")]
 
@@ -130,6 +134,8 @@ replication_config = SubResource("SceneReplicationConfig_3rbkl")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38198, 0)
+billboard = 1
 
 [node name="Label3D" type="Label3D" parent="Sprite3D"]
+billboard = 1
 text = "Batata"

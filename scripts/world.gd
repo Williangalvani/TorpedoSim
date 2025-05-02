@@ -35,7 +35,7 @@ func _ready():
 	multiplayer.connected_to_server.connect(_on_connected_ok)
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
-	
+	print(Globals.player_info)
 	if is_server:
 		_setup_server()
 	else:
@@ -220,5 +220,7 @@ func remove_multiplayer_peer():
 func _register_player(new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
 	players[new_player_id] = new_player_info
+	player_info = new_player_info
 	player_connected.emit(new_player_id, new_player_info)
+	Globals.player_info = new_player_info
 	pprint("Client: player %s registered" % new_player_info)
