@@ -69,7 +69,7 @@ services:
         ipv4_address: 192.168.100.3
     volumes:
       - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin
-      - ./bag-of-holding:/root/.config/bag-of-holding2
+      - ./bag-of-holding2:/root/.config/bag-of-holding
 
 networks:
   blueos_network:
