@@ -8,6 +8,8 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
       - ../deploy/html:/deploy/html:ro
+      - letsencrypt-certs:/etc/letsencrypt
+      - letsencrypt-www:/var/www/certbot
     depends_on:
       - godot_server
       - blueos1
@@ -15,7 +17,17 @@ services:
     networks:
       blueos_network:
         ipv4_address: 192.168.100.20
+    restart: unless-stopped
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - letsencrypt-certs:/etc/letsencrypt
+      - letsencrypt-www:/var/www/certbot
+    networks:
+      blueos_network:
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done;'"
+    restart: unless-stopped
 
   godot_server:
     image: ubuntu:22.04
@@ -57,11 +69,13 @@ services:
       - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin
       - ./bag-of-holding:/root/.config/bag-of-holding2
 
-
-
 networks:
   blueos_network:
     driver: bridge
     ipam:
       config:
         - subnet: 192.168.100.0/24 
+
+volumes:
+  letsencrypt-certs:
+  letsencrypt-www: 
