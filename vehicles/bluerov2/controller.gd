@@ -11,10 +11,6 @@ extends RigidBody3D
 # last servo values received from the server
 var servos = []
 
-func _enter_tree():
-	if Globals.player_info != null:
-		$Sprite3D/Label3D.text = str(Globals.player_info["simple_id"])
-
 func set_json_port(port):
 	$ardupilot_sitl_json.JSON_PORT = port
 

@@ -61,12 +61,14 @@ func _create_initial_vehicles():
 	for i in range(NUM_VEHICLES):
 		var new_vehicle = player_scene.instantiate()
 		new_vehicle.set_json_port(9002 + i)
-		new_vehicle.name = "vehicle_%d" % i
+		var vehicle_number = i + 1
+		new_vehicle.name = "vehicle_%d" % vehicle_number
+		new_vehicle.set_name_label("Rov %d" % vehicle_number)
 		
 		# Position vehicles in a 2x2 grid, spaced 5 units apart
 		var row = i / 2
 		var col = i % 2
-		new_vehicle.position = Vector3(col * 0.0, 0, row * 0.5)
+		new_vehicle.position = Vector3(col * 0.6, 0, row * 0.6)
 		
 		$players.add_child(new_vehicle, true)
 		available_vehicles.append(new_vehicle)
@@ -162,8 +164,10 @@ func _setup_client_vehicle():
 		var url = JavaScriptBridge.eval('window.location.href')
 		var vehicle_number = url.split("?")[1].split("=")[1]
 		player_data.vehicle_name = "vehicle_" + vehicle_number
+		print("attaching to vehicle", vehicle_number)
 		
 	var my_bluerov = $players.find_child(player_data.vehicle_name, true, false)
+	print("my_bluerov", my_bluerov)
 	
 	if my_bluerov:
 		%PlayerPhantomCamera3D.follow_target = my_bluerov
