@@ -14,7 +14,9 @@ var servos = []
 func _enter_tree():
 	if Globals.player_info != null:
 		$Sprite3D/Label3D.text = str(Globals.player_info["simple_id"])
-	set_multiplayer_authority(int(str(name)))
+
+func set_json_port(port):
+	$ardupilot_sitl_json.JSON_PORT = port
 
 func _ready():
 	# initialize servos to neutral
@@ -151,6 +153,6 @@ func check_joystick() -> void:
 func _physics_process(_delta: float) -> void:
 	if !is_multiplayer_authority():
 		return
-	self.set_thrusters()
 	self.apply_buoyancy()
+	self.set_thrusters()
 	self.check_joystick()

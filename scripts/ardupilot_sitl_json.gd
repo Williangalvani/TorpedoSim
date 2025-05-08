@@ -25,7 +25,7 @@ const RECONNECT_DELAY_MS = 2000  # Wait 2 seconds between connection attempts
 
 # UDP mode variables
 var interface = PacketPeerUDP.new()  # UDP socket for fdm in (server)
-var peer = null
+var peer_known = false
 
 # Common variables
 var calculated_acceleration: Vector3
@@ -35,28 +35,35 @@ var last_servo_timestamp: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not Globals.is_server:
+		return
+	print("starting ardupilot json integration")
 	start_time = Time.get_ticks_msec()
 	last_velocity = Vector3.ZERO
 	if target_vehicle:
 		_initial_position = target_vehicle.get_global_transform().origin
 	set_physics_process(true)
-	
+
 	if connection_type == 0:  # UDP mode
 		connect_udp()
 	else:  # WebSocket mode
 		connect_websocket()
 
 func connect_udp() -> void:
-	var actual_port = JSON_PORT + Globals.player_info.simple_id
-	if interface.bind(actual_port) != OK:
+	if !Globals.is_server:
+		print("not a server, quitting sitl integration")
+		return
+
+	var actual_port = JSON_PORT
+	if interface.is_bound() and interface.get_local_port() == JSON_PORT:
+		print("UDP listening on port " + str(actual_port))
+	if  !interface.is_bound() and interface.bind(actual_port) != OK:
 		print("Failed to connect UDP on port ", actual_port)
-		status_updated.emit("Failed to connect UDP")
-	else:
-		print("UDP bound to port ", actual_port)
-		status_updated.emit("UDP listening on port " + str(actual_port))
+	print(self.target_vehicle, "listening on port ", actual_port)
 
 func connect_websocket() -> void:
-	var websocket_url = "ws://192.168.15.8:9002"
+	last_connection_attempt = Time.get_ticks_msec()
+	var websocket_url = "ws://192.168.15.9:9002"
 	if OS.has_feature('web'):
 		websocket_url = JavaScriptBridge.eval('window.location.origin.replace("http","ws")') + "/ws_sitl/"	
 	print("Connecting to ArduPilot WebSocket server at ", websocket_url)
@@ -67,24 +74,24 @@ func connect_websocket() -> void:
 		status_updated.emit("Failed to connect to ArduPilot")
 	else:
 		print("WebSocket connection successful")
-	last_connection_attempt = Time.get_ticks_msec()
+	
 
 func read_udp_servos() -> void:
-	if not peer and interface.get_packet_port() > 0:
-		interface.set_dest_address("127.0.0.1", interface.get_packet_port())
-		peer = true
-
 	if not interface.get_available_packet_count():
-		if (Time.get_ticks_msec() - last_servo_timestamp) > 1000:
-			status_updated.emit("Not connected to ArduPilot")
 		if wait_SITL:
 			interface.wait()
 		else:
 			return
-	
-	handle_servos(interface.get_packet())
+
+	var buffer = StreamPeerBuffer.new()
+	buffer.data_array = interface.get_packet()
+	# print(self.target_vehicle, "got data from", interface.get_packet_ip(), " at port ", interface.get_packet_port())
+	handle_servos(buffer.data_array)
+	interface.set_dest_address(interface.get_packet_ip(), interface.get_packet_port())
+	peer_known = true
 
 func handle_servos(data: PackedByteArray) -> void:
+
 	var buffer = StreamPeerBuffer.new()
 	buffer.data_array = data
 	
@@ -119,9 +126,8 @@ func send_fdm() -> void:
 		send_fdm_websocket()
 
 func send_fdm_udp() -> void:
-	if not peer:
+	if not peer_known:
 		return
-		
 	var buffer = StreamPeerBuffer.new()
 	var json_data = prepare_fdm_data()
 	var json_string = "\n" + JSON.stringify(json_data) + "\n"
@@ -171,6 +177,8 @@ func prepare_fdm_data() -> Dictionary:
 	return JSON_fmt
 
 func _process(delta: float) -> void:
+	if !Globals.is_server:
+		return
 	if connection_type == 0:  # UDP mode
 		read_udp_servos()
 	else:  # WebSocket mode

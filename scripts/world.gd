@@ -11,6 +11,7 @@ const ALTERNATIVE_PORTS = [7001, 7002, 7003, 8000]  # Alternative ports to try i
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
 const MAX_CONNECTIONS = 20
 const USE_WSS = false # Keep this false to disable TLS/SSL
+const NUM_VEHICLES = 4  # Number of vehicles to pre-spawn
 
 # This will contain player info for every player,
 # with the keys being each player's unique IDs.
@@ -18,9 +19,10 @@ var players = {}
 
 # This is the local player info. This should be modified locally
 # before the connection is made. It will be passed to every other peer.
-var player_info = {"name": "Name"}
+var player_data = {"name": "Name"}
 
 var players_loaded = 0
+var available_vehicles = []  # List to track available vehicles
 
 var player_scene = preload("res://vehicles/bluerov2/BlueROV2.tscn")
 
@@ -36,7 +38,9 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	print(Globals.player_info)
+	is_server = OS.has_feature("dedicated_server")
 	if is_server:
+		Globals.is_server = true
 		_setup_server()
 	else:
 		_setup_client()
@@ -46,9 +50,27 @@ func _ready():
 #
 
 func _setup_server():
+	print("setting up server")
 	$serverCamera.make_current()
 	$HUD/HBoxContainer/servosPanel.visible = false
+	_create_initial_vehicles()
 	create_game()
+
+func _create_initial_vehicles():
+	# Create NUM_VEHICLES vehicles and position them in a grid
+	for i in range(NUM_VEHICLES):
+		var new_vehicle = player_scene.instantiate()
+		new_vehicle.set_json_port(9002 + i)
+		new_vehicle.name = "vehicle_%d" % i
+		
+		# Position vehicles in a 2x2 grid, spaced 5 units apart
+		var row = i / 2
+		var col = i % 2
+		new_vehicle.position = Vector3(col * 5.0, 0, row * 5.0)
+		
+		$players.add_child(new_vehicle, true)
+		available_vehicles.append(new_vehicle)
+		pprint("Created vehicle %d at position %s" % [i, new_vehicle.position])
 
 func create_game():
 	var peer = WebSocketMultiplayerPeer.new()
@@ -68,35 +90,45 @@ func create_game():
 
 # Server handling of new player connections
 func _server_handle_player_connected(id):
+	if available_vehicles.size() == 0:
+		pprint("No vehicles available for player %s" % id)
+		return
+		
+	var vehicle = available_vehicles.pop_front()
 	var new_player_info = {
 		"name": str(id),
 		"peerid": id,
-		"simple_id": players.size()
+		"simple_id": players.size(),
+		"vehicle_name": vehicle.name
 	}
 	players[id] = new_player_info
 	
 	# Register the new player on their client
 	_register_player.rpc_id(id, new_player_info)
 	
-	# Create player instance on server
-	var new_player = player_scene.instantiate()
-	new_player.name = str(id)
-	new_player.player_info = new_player_info
-	$players.add_child(new_player, true)
-	
-	pprint("Server: player %s connected" % id)
+	# Rename the vehicle to match the player ID and set authority
+	vehicle.name = str(id)
+	vehicle.player_info = new_player_info
+
+	pprint("Server: player %s connected and assigned to vehicle %s" % [id, vehicle.name])
 	pprint(str(players))
 
 # Server handling of player disconnections
 func _server_handle_player_disconnected(id):
+	if players.has(id):
+		var player_data = players[id]
+		var vehicle_name = player_data.get("vehicle_name")
+		
+		# Find the vehicle and make it available again
+		for child in $players.get_children():
+			if child.name == str(id):
+				child.name = vehicle_name
+				available_vehicles.append(child)
+				break
+	
 	players.erase(id)
 	player_disconnected.emit(id)
-	pprint("Server: player %s disconnected" % id)
-	
-	for child in $players.get_children():
-		if child.name == str(id):
-			child.queue_free()
-			break
+	pprint("Server: player %s disconnected, vehicle returned to pool" % id)
 
 #
 # CLIENT-SPECIFIC CODE
@@ -159,8 +191,8 @@ func _find_camera_in_node(node):
 # Client handling of successful connection
 func _client_handle_connected():
 	var peer_id = multiplayer.get_unique_id()
-	players[peer_id] = player_info
-	player_connected.emit(peer_id, player_info)
+	players[peer_id] = player_data
+	player_connected.emit(peer_id, player_data)
 	pprint("Client: connected with ID %s" % peer_id)
 	
 	# Wait a moment for player creation then setup vehicle
@@ -220,7 +252,7 @@ func remove_multiplayer_peer():
 func _register_player(new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
 	players[new_player_id] = new_player_info
-	player_info = new_player_info
+	player_data = new_player_info
 	player_connected.emit(new_player_id, new_player_info)
 	Globals.player_info = new_player_info
 	pprint("Client: player %s registered" % new_player_info)

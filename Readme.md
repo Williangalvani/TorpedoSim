@@ -9,3 +9,29 @@ to use, launch the simulator. and then run the ArduSub code.
 the vectored_6dof frame loads sub-6dof.parm, which is one of the first things we need to modify.
 
 Use Godot 4.4-beta2
+
+															 
+				BlueSim manages                              
+				Instances of BlueOS                          
+				Passing custom ports                         
+				for SITL and http comms                      
+				(cockpit served on /cockpit)                 
+															 
+  ┌─────────────┐          ┌───────────────┐                 
+  │             ┼─────────►│               │                 
+  │  BlueSIM    │          │ BlueOS        │                 
+  │             │          │ SITL          │                 
+  └──┬──────────┘   ┌──────┼               │                 
+	 │              │      └┬────────────▲─┘                 
+	 │              │       │Mavlink     │                   
+	 │              │       │Telemetry   │Mavlink controls   
+	 │        Serves│       │            │                   
+	 │              │       │            │                   
+	 │              │      ┌▼────────────┼──┐                
+	 │              └─────►│                │                
+	 │ Game state          │  Cockpit       │                
+	 └────────────────────►│                │                
+   (same port all clients) │                │                
+						   └────────────────┘                
+															 
+															 

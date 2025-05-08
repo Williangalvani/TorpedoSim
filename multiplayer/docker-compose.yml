@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - blueos1
+      - blueos2
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.20
+    logging:
+      driver: "none"
+
+  godot_server:
+    image: ubuntu:22.04
+    platform: linux/amd64
+
+    volumes:
+      - ../deploy:/deploy
+    working_dir: /deploy
+    command: ./dedicated_server.sh
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.30
+    restart: unless-stopped
+  blueos1:
+    image: williangalvani/blueos-core:bluesim_dev
+    environment:
+      - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
+      - JSON_SIM_PORT=9002
+      - JSON_SIM_HOST=192.168.100.30
+    pull_policy: always
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.2
+    logging:
+      driver: "none"
+
+  blueos2:
+    image: williangalvani/blueos-core:bluesim_dev
+    environment:
+      - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
+      - JSON_SIM_PORT=9003
+      - JSON_SIM_HOST=192.168.100.30
+    pull_policy: always
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.3
+    logging:
+      driver: "none"
+
+networks:
+  blueos_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24 
