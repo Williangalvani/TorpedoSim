@@ -28,6 +28,8 @@ services:
       blueos_network:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done;'"
     restart: unless-stopped
+    profiles:
+      - production
 
   godot_server:
     image: ubuntu:22.04
