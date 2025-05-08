@@ -150,8 +150,8 @@ func check_joystick() -> void:
 	self.apply_central_force(transform.basis * Vector3.UP*10*throttle)
 
 func _physics_process(_delta: float) -> void:
+	self.apply_buoyancy()
 	if !is_multiplayer_authority():
 		return
-	self.apply_buoyancy()
 	self.set_thrusters()
 	self.check_joystick()
