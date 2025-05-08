@@ -77,7 +77,7 @@ func create_game():
 	var used_port = PORT
 	
 	# Explicitly pass null as the TLS options to ensure TLS is disabled
-	var error = peer.create_server(PORT, "127.0.0.1", null)
+	var error = peer.create_server(PORT, "0.0.0.0", null)
 	if error != OK:
 		print("Failed to create server on port %d: Error %d" % [PORT, error])
 		print("ERROR: Could not create WebSocket server on port. Last error: ", error)
@@ -146,7 +146,7 @@ func join_game(address = ""):
 			address = "ws://" + DEFAULT_SERVER_IP + ":" + str(PORT)
 	
 	var peer = WebSocketMultiplayerPeer.new()
-	var error = peer.create_client(address)
+	var error = peer.create_client(address, TLSOptions.client_unsafe())
 
 	if error:
 		print("Error joining: ", error)
