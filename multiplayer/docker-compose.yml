@@ -40,6 +40,9 @@ services:
     networks:
       blueos_network:
         ipv4_address: 192.168.100.2
+    volumes:
+      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
+      - ./bag-of-holding:/root/.config/bag-of-holding:ro
 
   blueos2:
     image: williangalvani/blueos-core:bluesim_dev
@@ -51,6 +54,9 @@ services:
     networks:
       blueos_network:
         ipv4_address: 192.168.100.3
+    volumes:
+      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
+      - ./bag-of-holding:/root/.config/bag-of-holding:ro
 
 
 
