@@ -1,4 +1,3 @@
-
 services:
   nginx:
     image: nginx:latest
@@ -41,8 +40,8 @@ services:
       blueos_network:
         ipv4_address: 192.168.100.2
     volumes:
-      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
-      - ./bag-of-holding:/root/.config/bag-of-holding:ro
+      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin
+      - ./bag-of-holding:/root/.config/bag-of-holding
 
   blueos2:
     image: williangalvani/blueos-core:bluesim_dev
@@ -55,8 +54,8 @@ services:
       blueos_network:
         ipv4_address: 192.168.100.3
     volumes:
-      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
-      - ./bag-of-holding:/root/.config/bag-of-holding:ro
+      - ./eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin
+      - ./bag-of-holding:/root/.config/bag-of-holding
 
 
 

@@ -90,28 +90,28 @@ func create_game():
 
 # Server handling of new player connections
 func _server_handle_player_connected(id):
-	if available_vehicles.size() == 0:
-		pprint("No vehicles available for player %s" % id)
-		return
-		
-	var vehicle = available_vehicles.pop_front()
-	var new_player_info = {
-		"name": str(id),
-		"peerid": id,
-		"simple_id": players.size(),
-		"vehicle_name": vehicle.name
-	}
-	players[id] = new_player_info
-	
+	#if available_vehicles.size() == 0:
+		#pprint("No vehicles available for player %s" % id)
+		#return
+		#
+	#var vehicle = available_vehicles.pop_front()
+	#var new_player_info = {
+		#"name": str(id),
+		#"peerid": id,
+		#"simple_id": players.size(),
+		#"vehicle_name": vehicle.name
+	#}
+	#players[id] = new_player_info
+	#
 	# Register the new player on their client
-	_register_player.rpc_id(id, new_player_info)
+	_register_player.rpc_id(id)
 	
-	# Rename the vehicle to match the player ID and set authority
-	vehicle.name = str(id)
-	vehicle.player_info = new_player_info
-
-	pprint("Server: player %s connected and assigned to vehicle %s" % [id, vehicle.name])
-	pprint(str(players))
+	## Rename the vehicle to match the player ID and set authority
+	#vehicle.name = str(id)
+	#vehicle.player_info = new_player_info
+#
+	#pprint("Server: player %s connected and assigned to vehicle %s" % [id, vehicle.name])
+	#pprint(str(players))
 
 # Server handling of player disconnections
 func _server_handle_player_disconnected(id):
@@ -157,6 +157,12 @@ func join_game(address = ""):
 # Client function to find and setup player vehicle and camera
 func _setup_client_vehicle():
 	# Get our vehicle using the name assigned by the server
+	if OS.has_feature("web"):
+		#get vehicle number from url query params
+		var url = JavaScriptBridge.eval('window.location.href')
+		var vehicle_number = url.split("?")[1].split("=")[1]
+		player_data.vehicle_name = "vehicle_" + vehicle_number
+		
 	var my_bluerov = $players.find_child(player_data.vehicle_name, true, false)
 	
 	if my_bluerov:
@@ -248,14 +254,8 @@ func remove_multiplayer_peer():
 
 # RPC functions
 @rpc("any_peer", "reliable")
-func _register_player(new_player_info):
-	var new_player_id = multiplayer.get_remote_sender_id()
-	players[new_player_id] = new_player_info
-	player_data = new_player_info
-	player_connected.emit(new_player_id, new_player_info)
-	Globals.player_info = new_player_info
-	pprint("Client: player %s registered" % new_player_info)
-	
+func _register_player():
+	print(players)
 	# Setup vehicle and camera immediately after registration
 	if !is_server:
 		_setup_client_vehicle()
