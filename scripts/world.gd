@@ -66,7 +66,7 @@ func _create_initial_vehicles():
 		# Position vehicles in a 2x2 grid, spaced 5 units apart
 		var row = i / 2
 		var col = i % 2
-		new_vehicle.position = Vector3(col * 5.0, 0, row * 5.0)
+		new_vehicle.position = Vector3(col * 0.0, 0, row * 0.5)
 		
 		$players.add_child(new_vehicle, true)
 		available_vehicles.append(new_vehicle)
@@ -156,22 +156,21 @@ func join_game(address = ""):
 
 # Client function to find and setup player vehicle and camera
 func _setup_client_vehicle():
-	var id = str(multiplayer.get_unique_id())
-	
-	# Loop through children to find the one matching our ID
-	var my_bluerov = null
-	for child in $players.get_children():
-		if child.name == id:
-			my_bluerov = child
-			break
+	# Get our vehicle using the name assigned by the server
+	var my_bluerov = $players.find_child(player_data.vehicle_name, true, false)
 	
 	if my_bluerov:
 		%PlayerPhantomCamera3D.follow_target = my_bluerov
+		my_bluerov.set_name_label(player_data.vehicle_name)
 		
 		# Find and activate camera
 		var camera = _find_camera_in_node(my_bluerov)
 		if camera:
 			camera.make_current()
+		else:
+			pprint("Warning: No camera found in vehicle %s" % player_data.vehicle_name)
+	else:
+		pprint("Error: Could not find assigned vehicle %s" % player_data.vehicle_name)
 
 # Helper function to recursively find a camera in a node's children
 func _find_camera_in_node(node):
@@ -256,3 +255,7 @@ func _register_player(new_player_info):
 	player_connected.emit(new_player_id, new_player_info)
 	Globals.player_info = new_player_info
 	pprint("Client: player %s registered" % new_player_info)
+	
+	# Setup vehicle and camera immediately after registration
+	if !is_server:
+		_setup_client_vehicle()

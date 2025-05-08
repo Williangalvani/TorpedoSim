@@ -108,6 +108,7 @@ dof_blur_amount = 0.21
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_tw3kd")
+is_server = null
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3dlgs")
