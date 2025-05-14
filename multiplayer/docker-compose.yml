@@ -72,33 +72,33 @@ services:
       - ./blueos2/eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin
       - ./blueos2/bag-of-holding:/root/.config/bag-of-holding
 
-  # blueos3:
-  #   image: williangalvani/blueos-core:bluesim_dev
-  #   environment:
-  #     - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
-  #     - JSON_SIM_PORT=9004
-  #     - JSON_SIM_HOST=192.168.100.30
-  #   pull_policy: always
-  #   networks:
-  #     blueos_network:
-  #       ipv4_address: 192.168.100.4
-  #   volumes:
-  #     - ./blueos3/eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
-  #     - ./blueos3/bag-of-holding:/root/.config/bag-of-holding:ro
+  blueos3:
+    image: williangalvani/blueos-core:bluesim_dev
+    environment:
+      - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
+      - JSON_SIM_PORT=9004
+      - JSON_SIM_HOST=192.168.100.30
+    pull_policy: always
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.4
+    volumes:
+      - ./blueos3/eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
+      - ./blueos3/bag-of-holding:/root/.config/bag-of-holding:ro
 
-  # blueos4:
-  #   image: williangalvani/blueos-core:bluesim_dev
-  #   environment:
-  #     - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
-  #     - JSON_SIM_PORT=9005
-  #     - JSON_SIM_HOST=192.168.100.30
-  #   pull_policy: always
-  #   networks:
-  #     blueos_network:
-  #       ipv4_address: 192.168.100.5
-  #   volumes:
-  #     - ./blueos4/eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
-  #     - ./blueos4/bag-of-holding:/root/.config/bag-of-holding:ro
+  blueos4:
+    image: williangalvani/blueos-core:bluesim_dev
+    environment:
+      - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
+      - JSON_SIM_PORT=9005
+      - JSON_SIM_HOST=192.168.100.30
+    pull_policy: always
+    networks:
+      blueos_network:
+        ipv4_address: 192.168.100.5
+    volumes:
+      - ./blueos4/eeprom.bin:/root/.config/ardupilot-manager/firmware/eeprom.bin:ro
+      - ./blueos4/bag-of-holding:/root/.config/bag-of-holding:ro
 
 networks:
   blueos_network:
