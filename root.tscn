@@ -19,7 +19,6 @@ sky_material = SubResource("ProceduralSkyMaterial_blcw0")
 background_mode = 2
 sky = SubResource("Sky_50g4q")
 tonemap_mode = 2
-glow_enabled = true
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0, 0.570063, 0.923435, 1)
@@ -151,25 +150,19 @@ item_3/id = 3
 item_3/disabled = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
-visible = false
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 577.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -376.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 100.0
+offset_bottom = 35.0
 alignment = 2
 
 [node name="statuspanel" type="Panel" parent="HUD/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
 size_flags_vertical = 0
 
 [node name="status" type="Label" parent="HUD/HBoxContainer/statuspanel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_left = 5.0
@@ -196,6 +189,7 @@ text = "FPS: N/A"
 script = SubResource("GDScript_huihk")
 
 [node name="SitlPanel" type="Panel" parent="HUD/HBoxContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 35)
 layout_mode = 2
 
@@ -209,6 +203,7 @@ offset_bottom = 28.0
 text = "SITL: N/A"
 
 [node name="servosPanel" type="Panel" parent="HUD/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
@@ -223,6 +218,7 @@ text = "Servos
 "
 
 [node name="PlayersPanel" type="Panel" parent="HUD/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
@@ -312,7 +308,7 @@ offset_bottom = 35.0
 text = "X"
 
 [node name="serverCamera" type="Camera3D" parent="."]
-transform = Transform3D(-2.86341e-08, -0.655071, 0.755568, 3.30269e-08, 0.755568, 0.655071, -1, 4.37114e-08, -2.05756e-15, 3.15408, 1.90281, -1.15435)
+transform = Transform3D(-3.47371e-08, -0.79469, 0.607015, 2.65335e-08, 0.607015, 0.79469, -1, 4.37114e-08, -4.60408e-14, 2.65073, 3.98133, -1.15435)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://dcmatypv41wok")

@@ -14,8 +14,8 @@ var servos = []
 func set_json_port(port):
 	$ardupilot_sitl_json.JSON_PORT = port
 
-func set_name_label(name):
-	$Sprite3D/Label3D.text = name
+func set_name_label(name_):
+	$Sprite3D/Label3D.text = name_
 
 func _ready():
 	# initialize servos to neutral

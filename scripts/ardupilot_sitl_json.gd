@@ -176,7 +176,7 @@ func prepare_fdm_data() -> Dictionary:
 	
 	return JSON_fmt
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !Globals.is_server:
 		return
 	if connection_type == 0:  # UDP mode

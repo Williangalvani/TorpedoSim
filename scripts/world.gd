@@ -13,16 +13,9 @@ const MAX_CONNECTIONS = 20
 const USE_WSS = false # Keep this false to disable TLS/SSL
 const NUM_VEHICLES = 4  # Number of vehicles to pre-spawn
 
-# This will contain player info for every player,
-# with the keys being each player's unique IDs.
-var players = {}
-
 # This is the local player info. This should be modified locally
 # before the connection is made. It will be passed to every other peer.
 var player_data = {"name": "Name"}
-
-var players_loaded = 0
-var available_vehicles = []  # List to track available vehicles
 
 var player_scene = preload("res://vehicles/bluerov2/BlueROV2.tscn")
 
@@ -71,7 +64,6 @@ func _create_initial_vehicles():
 		new_vehicle.position = Vector3(col * 0.6, 0, row * 0.6)
 		
 		$players.add_child(new_vehicle, true)
-		available_vehicles.append(new_vehicle)
 		pprint("Created vehicle %d at position %s" % [i, new_vehicle.position])
 
 func create_game():
@@ -79,7 +71,7 @@ func create_game():
 	var used_port = PORT
 	
 	# Explicitly pass null as the TLS options to ensure TLS is disabled
-	var error = peer.create_server(PORT, "0.0.0.0", null)
+	var error = peer.create_server(PORT, "127.0.0.1", null)
 	if error != OK:
 		print("Failed to create server on port %d: Error %d" % [PORT, error])
 		print("ERROR: Could not create WebSocket server on port. Last error: ", error)
@@ -92,43 +84,11 @@ func create_game():
 
 # Server handling of new player connections
 func _server_handle_player_connected(id):
-	#if available_vehicles.size() == 0:
-		#pprint("No vehicles available for player %s" % id)
-		#return
-		#
-	#var vehicle = available_vehicles.pop_front()
-	#var new_player_info = {
-		#"name": str(id),
-		#"peerid": id,
-		#"simple_id": players.size(),
-		#"vehicle_name": vehicle.name
-	#}
-	#players[id] = new_player_info
-	#
-	# Register the new player on their client
 	_register_player.rpc_id(id)
-	
-	## Rename the vehicle to match the player ID and set authority
-	#vehicle.name = str(id)
-	#vehicle.player_info = new_player_info
-#
-	#pprint("Server: player %s connected and assigned to vehicle %s" % [id, vehicle.name])
-	#pprint(str(players))
+
 
 # Server handling of player disconnections
 func _server_handle_player_disconnected(id):
-	if players.has(id):
-		var player_data = players[id]
-		var vehicle_name = player_data.get("vehicle_name")
-		
-		# Find the vehicle and make it available again
-		for child in $players.get_children():
-			if child.name == str(id):
-				child.name = vehicle_name
-				available_vehicles.append(child)
-				break
-	
-	players.erase(id)
 	player_disconnected.emit(id)
 	pprint("Server: player %s disconnected, vehicle returned to pool" % id)
 
@@ -174,12 +134,10 @@ func _setup_client_vehicle():
 		print("attaching to vehicle", vehicle_number)
 		
 	var my_bluerov = $players.find_child(player_data.vehicle_name, true, false)
-	print("my_bluerov", my_bluerov)
+	print("my_bluerov ", my_bluerov)
 	
 	if my_bluerov:
 		%PlayerPhantomCamera3D.follow_target = my_bluerov
-		my_bluerov.set_name_label(player_data.vehicle_name)
-		
 		# Find and activate camera
 		var camera = _find_camera_in_node(my_bluerov)
 		if camera:
@@ -207,7 +165,6 @@ func _find_camera_in_node(node):
 # Client handling of successful connection
 func _client_handle_connected():
 	var peer_id = multiplayer.get_unique_id()
-	players[peer_id] = player_data
 	player_connected.emit(peer_id, player_data)
 	pprint("Client: connected with ID %s" % peer_id)
 	
@@ -222,7 +179,6 @@ func _client_handle_connection_failed():
 # Client handling of server disconnection
 func _client_handle_server_disconnected():
 	multiplayer.multiplayer_peer = null
-	players.clear()
 	server_disconnected.emit()
 	pprint("Client: server disconnected")
 
@@ -240,7 +196,6 @@ func _on_player_disconnected(id):
 	if is_server:
 		_server_handle_player_disconnected(id)
 	else:
-		players.erase(id)
 		player_disconnected.emit(id)
 		pprint("Client: player %s disconnected" % id)
 
@@ -261,12 +216,10 @@ func _on_server_disconnected():
 
 func remove_multiplayer_peer():
 	multiplayer.multiplayer_peer = null
-	players.clear()
 
 # RPC functions
 @rpc("any_peer", "reliable")
 func _register_player():
-	print(players)
 	# Setup vehicle and camera immediately after registration
 	if !is_server:
 		_setup_client_vehicle()
