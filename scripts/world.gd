@@ -137,6 +137,13 @@ func _server_handle_player_disconnected(id):
 #
 
 func _setup_client():
+	print(OS.get_cmdline_args())
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg.find("player=") != -1:
+			player_data.name = arg.split("=")[1]
+			player_data.vehicle_name = "vehicle_" + arg.split("=")[1]
+			break
 	join_game()
 
 func join_game(address = ""):
