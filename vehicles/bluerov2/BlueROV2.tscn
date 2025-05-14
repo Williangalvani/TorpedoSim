@@ -29,7 +29,10 @@ properties/3/spawn = true
 properties/3/replication_mode = 1
 properties/4/path = NodePath("Sprite3D/Label3D:text")
 properties/4/spawn = true
-properties/4/replication_mode = 1
+properties/4/replication_mode = 2
+properties/5/path = NodePath("Camera:rotation")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [node name="BlueRov2" type="RigidBody3D"]
 mass = 13.0
