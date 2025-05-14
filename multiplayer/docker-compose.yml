@@ -26,12 +26,11 @@ services:
     volumes:
       - letsencrypt-certs:/etc/letsencrypt
       - letsencrypt-www:/var/www/certbot
-    networks:
-      blueos_network:
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done;'"
+    network_mode: host
     restart: unless-stopped
     profiles:
-      - production
+      - certs
+    command: certonly --standalone --non-interactive --agree-tos  -d sim.bluesim.blueos.cloud -d player1.bluesim.blueos.cloud -d player2.bluesim.blueos.cloud -d player3.bluesim.blueos.cloud -d player4.bluesim.blueos.cloud
 
   godot_server:
     image: ubuntu:22.04
