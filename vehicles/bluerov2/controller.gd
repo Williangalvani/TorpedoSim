@@ -11,6 +11,8 @@ extends RigidBody3D
 # last servo values received from the server
 var servos = []
 
+@onready var is_web = OS.has_feature("web")
+
 func set_json_port(port):
 	$ardupilot_sitl_json.JSON_PORT = port
 
@@ -151,7 +153,7 @@ func check_joystick() -> void:
 
 func _physics_process(_delta: float) -> void:
 	self.apply_buoyancy()
-	if !is_multiplayer_authority():
+	if is_web and !is_multiplayer_authority():
 		return
 	self.set_thrusters()
 	self.check_joystick()
