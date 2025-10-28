@@ -1,18 +1,23 @@
 #!/bin/bash
 
 # Script to generate self-signed certificates for local development
-# This creates a wildcard certificate for *.bluesim.blueos.cloud and bluesim.blueos.cloud
+# Usage: ./generate-selfsigned-certs.sh [additional-domain]
 
 set -e
 
 CERT_DIR="./ssl/selfsigned"
 DOMAIN="bluesim.blueos.cloud"
 WILDCARD_DOMAIN="*.bluesim.blueos.cloud"
+ADDITIONAL_DOMAIN="${1:-}"
 
 echo "Creating certificate directory..."
 mkdir -p "$CERT_DIR"
 
-echo "Generating self-signed certificate for $DOMAIN and $WILDCARD_DOMAIN..."
+if [ -n "$ADDITIONAL_DOMAIN" ]; then
+    echo "Generating self-signed certificate for $DOMAIN, $WILDCARD_DOMAIN, and $ADDITIONAL_DOMAIN..."
+else
+    echo "Generating self-signed certificate for $DOMAIN and $WILDCARD_DOMAIN..."
+fi
 echo "This certificate will be valid for 365 days."
 
 # Generate private key
@@ -35,7 +40,13 @@ OU = Simulator
 CN = $DOMAIN
 
 [v3_req]
-keyUsage = keyEncipherment, dataEncipherment
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[v3_ca]
+basicConstraints = CA:FALSE
+keyUsage = critical, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
@@ -48,8 +59,22 @@ DNS.5 = player2.bluesim.blueos.cloud
 DNS.6 = player3.bluesim.blueos.cloud
 DNS.7 = player4.bluesim.blueos.cloud
 DNS.8 = localhost
+DNS.9 = *.nip.io
 IP.1 = 127.0.0.1
 EOF
+
+# Add additional domain if provided
+if [ -n "$ADDITIONAL_DOMAIN" ]; then
+    # Extract base domain and create variations
+    BASE_DOMAIN="$ADDITIONAL_DOMAIN"
+    echo "DNS.10 = $BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.11 = sim.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.12 = player1.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.13 = player2.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.14 = player3.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.15 = player4.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+    echo "DNS.16 = *.$BASE_DOMAIN" >> "$CERT_DIR/openssl.cnf"
+fi
 
 # Generate certificate signing request (CSR)
 openssl req -new -key "$CERT_DIR/privkey.pem" \
@@ -61,7 +86,7 @@ openssl x509 -req -days 365 \
     -in "$CERT_DIR/cert.csr" \
     -signkey "$CERT_DIR/privkey.pem" \
     -out "$CERT_DIR/fullchain.pem" \
-    -extensions v3_req \
+    -extensions v3_ca \
     -extfile "$CERT_DIR/openssl.cnf"
 
 # Clean up CSR
@@ -87,4 +112,3 @@ echo ""
 echo "To view certificate details:"
 echo "  openssl x509 -in $CERT_DIR/fullchain.pem -text -noout"
 echo ""
-

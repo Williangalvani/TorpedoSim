@@ -20,5 +20,10 @@ sed -i "s,\$IFRAME_URL,$1?player=2," blueos2/bag-of-holding
 sed -i "s,\$IFRAME_URL,$1?player=3," blueos3/bag-of-holding
 sed -i "s,\$IFRAME_URL,$1?player=4," blueos4/bag-of-holding
 
+# Link Let's Encrypt certs to the expected location
+mkdir -p ssl
+ln -sf /var/lib/docker/volumes/multiplayer_letsencrypt-certs/_data/live/sim.bluesim.blueos.cloud/fullchain.pem ssl/fullchain.pem 2>/dev/null || true
+ln -sf /var/lib/docker/volumes/multiplayer_letsencrypt-certs/_data/live/sim.bluesim.blueos.cloud/privkey.pem ssl/privkey.pem 2>/dev/null || true
+
 # then start the docker compose
 docker compose up -d

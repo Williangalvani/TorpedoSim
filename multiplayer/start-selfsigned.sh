@@ -15,15 +15,34 @@ fi
 BASEURL="$1"
 CERT_DIR="./ssl/selfsigned"
 
+# Extract domain from URL for certificate generation
+CERT_DOMAIN=$(echo "$BASEURL" | sed -E 's|https?://||' | sed -E 's|/.*||' | sed -E 's/^(sim|player[0-9])\.//') 
+
 echo "🚀 Starting BlueOS Simulator with self-signed certificates..."
+echo "   Base URL: $BASEURL"
+echo "   Certificate domain: $CERT_DOMAIN"
 echo ""
 
-# Check if certificates exist
+# Check if certificates exist and are valid for the domain
+REGEN_CERT=false
 if [ ! -f "$CERT_DIR/fullchain.pem" ] || [ ! -f "$CERT_DIR/privkey.pem" ]; then
-    echo "📜 Self-signed certificates not found. Generating them now..."
-    ./generate-selfsigned-certs.sh
+    REGEN_CERT=true
+    echo "📜 Self-signed certificates not found."
+elif ! openssl x509 -in "$CERT_DIR/fullchain.pem" -text -noout | grep -q "$CERT_DOMAIN" 2>/dev/null; then
+    REGEN_CERT=true
+    echo "📜 Certificate doesn't cover domain $CERT_DOMAIN."
+fi
+
+if [ "$REGEN_CERT" = true ]; then
+    echo "🔧 Generating new certificate..."
+    ./generate-selfsigned-certs.sh "$CERT_DOMAIN"
     echo ""
 fi
+
+# Create ssl directory and link self-signed certs to expected location
+mkdir -p ssl
+ln -sf selfsigned/fullchain.pem ssl/fullchain.pem
+ln -sf selfsigned/privkey.pem ssl/privkey.pem
 
 # Create player directories
 echo "📁 Setting up player directories..."
@@ -47,7 +66,11 @@ rm -f blueos*/bag-of-holding.bak
 
 echo ""
 echo "🐳 Starting Docker Compose with self-signed certificates..."
-docker compose -f docker-compose.selfsigned.yml up -d
+# Stop any running containers first
+docker compose down 2>/dev/null || true
+
+# Start docker compose
+docker compose up -d
 
 echo ""
 echo "✅ Simulator started successfully!"
@@ -56,12 +79,9 @@ echo "⚠️  IMPORTANT: You're using self-signed certificates"
 echo "   Your browser will show a security warning. You need to:"
 echo "   1. Click 'Advanced' or 'Show Details'"
 echo "   2. Click 'Proceed to site' or 'Accept Risk'"
-echo "   3. Do this for each domain:"
-echo "      - $BASEURL"
-echo "      - https://player1.bluesim.blueos.cloud"
-echo "      - https://player2.bluesim.blueos.cloud"
 echo ""
-echo "📊 To view logs: docker compose -f docker-compose.selfsigned.yml logs -f"
-echo "🛑 To stop: docker compose -f docker-compose.selfsigned.yml down"
+echo "🌐 Access: $BASEURL"
 echo ""
-
+echo "📊 To view logs: docker compose logs -f"
+echo "🛑 To stop: docker compose down"
+echo ""
