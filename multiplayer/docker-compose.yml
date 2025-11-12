@@ -20,7 +20,6 @@ services:
     networks:
       blueos_network:
         ipv4_address: 192.168.100.20
-    restart: unless-stopped
 
   certbot:
     image: certbot/certbot
@@ -28,7 +27,6 @@ services:
       - letsencrypt-certs:/etc/letsencrypt
       - letsencrypt-www:/var/www/certbot
     network_mode: host
-    restart: unless-stopped
     profiles:
       - certs
     command: certonly --standalone --non-interactive --agree-tos  -d sim.bluesim.blueos.cloud -d player1.bluesim.blueos.cloud -d player2.bluesim.blueos.cloud -d player3.bluesim.blueos.cloud -d player4.bluesim.blueos.cloud
@@ -45,7 +43,6 @@ services:
     networks:
       blueos_network:
         ipv4_address: 192.168.100.30
-    restart: unless-stopped
   blueos1:
     image: williangalvani/blueos-core:bluesim_dev
     restart: always
