@@ -1,6 +1,7 @@
 services:
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -34,6 +35,7 @@ services:
 
   godot_server:
     image: ubuntu:22.04
+    restart: always
     platform: linux/amd64
 
     volumes:
@@ -46,6 +48,7 @@ services:
     restart: unless-stopped
   blueos1:
     image: williangalvani/blueos-core:bluesim_dev
+    restart: always
     environment:
       - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
       - JSON_SIM_PORT=9002
@@ -60,6 +63,7 @@ services:
 
   blueos2:
     image: williangalvani/blueos-core:bluesim_dev
+    restart: always
     environment:
       - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
       - JSON_SIM_PORT=9003
@@ -74,6 +78,7 @@ services:
 
   blueos3:
     image: williangalvani/blueos-core:bluesim_dev
+    restart: always
     environment:
       - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
       - JSON_SIM_PORT=9004
@@ -88,6 +93,7 @@ services:
 
   blueos4:
     image: williangalvani/blueos-core:bluesim_dev
+    restart: always
     environment:
       - BLUEOS_DISABLE_SERVICES=cable_guy,beacon,kraken,wifi,bridget,commander,nmea_injector,iperf3,versionchooser,ping,log_zipper
       - JSON_SIM_PORT=9005
